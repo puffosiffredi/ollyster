@@ -77,7 +77,7 @@
   <header>
     <h1 class="logo">Ollyster</h1>
     <div class="description">
-      Ollyster is a twitter-like microblogging platform written in golang
+      Ollyster is a twitter-like microblogging platform written in golang and beego
     </div>
   </header>
   <footer>

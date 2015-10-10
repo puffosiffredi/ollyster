@@ -10,5 +10,5 @@ import (
 func init() {
 	beego.Router("/", &controllers.MainController{})
 	beego.Router("/olly", &controllers.MainController{}, "get:HelloSitepoint")
-	log.Println("Routers started!")
+	log.Println("Routers started! Hope no BauBau")
 }
