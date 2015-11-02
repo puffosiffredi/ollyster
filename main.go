@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"html"
 	"log"
 	"net/http"
@@ -33,8 +32,11 @@ func Hpwd() string {
 }
 
 func hello(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello, %q\n", html.EscapeString(r.URL.Path))
-	fmt.Fprintf(w, "If you see this page this is because URL %q is wrong\n", html.EscapeString(r.URL.Path))
+
+	http.Redirect(w, r, "/static", http.StatusMovedPermanently)
+
+	log.Printf("Hello, %q\n", html.EscapeString(r.URL.Path))
+
 }
 
 func ServeStatic(w http.ResponseWriter, r *http.Request) {
