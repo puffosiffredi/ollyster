@@ -1,0 +1,4 @@
+#
+# Initial Node List for Saku.
+#
+boseburo.ddns.net:8000/server.cgi

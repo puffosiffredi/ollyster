@@ -1,0 +1,17 @@
+{{/*
+ Copyright (c) 2005-2014 shinGETsu Project.
+ */}}
+{{define "footer"}}
+</div>
+{{ if .Menubar }}
+  {{template "menubar" .Menubar}}
+{{ end }}
+
+<div class="address">Powered by 
+  <a href="http://www.Shingetsu.Info/">shinGETsu</a>
+<div class="address"><img src="/gou.png" width=5%></div>
+<div class="address"><a href="https://github.com/shingetsu-gou/shingetsu-gou">Gou {{.Version}}</a>.</div>
+</body>
+</html>
+{{end}}
+

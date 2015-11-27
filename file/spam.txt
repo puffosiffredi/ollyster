@@ -1,0 +1,30 @@
+# -*- coding: utf-8 -*-
+#
+# Regexp list for spam posts.
+# Copyright (c) 2006,2014 shinGETsu Project.
+#
+# Encoding must be UTF-8.
+#
+# Write one regexp per one line.
+# The regexp is tested for a record line.
+#
+# Example:
+#    <>body:This is SPAM
+#    [Tt]his is (SPAM|Spam)
+#    This.*Spam
+#
+<>mail:[^@]+@[^.]+\..+
+<br> &lt;a href="
+\[url=http://
+#<br>(http://.+){5}<br>
+<>body:plime-keys.txt;5;10<>mail:
+(http://.+){10}.+
+(http://.+){5}.+<>mail:.+
+<>mail:mail
+<>body:doors
+(Casino.+){5}.+
+(kanpoulife.com.+){2}.+
+https?://.+<>mail:.+\.com.*<>name:
+<>mail:.+@(gmail|aol)\.com<>name:
+http://.+<>mail:.+yahoo\.cn<>name:
+<>mail:.*Dr.*@.*\.com<>name:.*Dr
