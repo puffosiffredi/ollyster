@@ -8,6 +8,7 @@ You can find the original Gou software [here](https://github.com/shingetsu-gou/s
 
 Or you can download executable binaries from [here](https://github.com/shingetsu-gou/shingetsu-gou/releases).
 
+All credits for this part are going to Gou.
 
 # What is now Ollyster and how it differs from Gou?
 
@@ -16,12 +17,13 @@ Or you can download executable binaries from [here](https://github.com/shingetsu
 3. Gou has no personal stream, Ollyster will add one as a local "BBS"
 4. Gou represents data as a list of BBS, Ollyster will represent it as a personal, social stream.
 
-# How Ollyster is different from GNU Social, Friendi.ca &co
+# How Ollyster is different from GNU Social, Friendi.ca &co?
 
 1. No dependencies. No Mysql, no apache, no curl,  no libraries, just go, golang and an executable.
 2. No PHP: get rid of ~400 security issues included with PHP.
 3. No "Ostatus". This protocol sucks, end of story. 
 4. Just unzip on disk , compile and run. Compile is what we do in go: "go get; go build" . That's it.
+
 
 
 
