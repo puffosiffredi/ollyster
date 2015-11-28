@@ -2,6 +2,12 @@
  Copyright (c) 2005-2014 shinGETsu Project.
  */}}
 {{define "record"}}
+
+
+
+  <li class="list-group-item col-md-8">
+
+
 <dt id="r{{.Sid}}" data-record-id="{{.Sid}}">
 {{ if .IsAdmin }}
   <input type="checkbox" name="record" value="{{.RecHead.Stamp}}_{{.RecHead.ID}}" />
@@ -41,4 +47,9 @@
 {{ end }}
 {{ end }}
 </dd>
+
+
+</li>
+
+
 {{end}}

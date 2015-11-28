@@ -2,24 +2,28 @@
 
 http://shingetsu.info/
 
-次の利用規約に同意した方のみ新月ネットワークに参加できます。
 
-(投稿者の責任または免責)
-1. 投稿者は投稿した記事に使用、改変または再配布の条件を記述しなければならない。
-   条件は新月の仕組みに矛盾するものであってはならない。
-2. 第1項の条件の記述がない場合には、利用者は投稿者が使用、
-   改変または再配布を制限しないことに同意したものとみなすことができる。
-3. 投稿者は第1項の条件または第2項の同意が正しいことに責任を持つ。
-4. 投稿者は法律に定めのない限り、個別の記事で宣言しない限り、
-   かつ第3項に反しない限り、記事の内容が正しいこと、役に立つこと、
-   または不愉快でないことなどについて保証しない。
+Ollyster AIMS to be a clone of Friendi.ca, GNU Social , Diaspora, written in go.
 
-(ノード管理者の責任または免責)
-5. ノード管理者は記事または掲示板を自由に編集または削除できる。
-6. ノード管理者は法律に定めのない限り、
-   ノードを管理・運営することで知った情報についての守秘義務を負わない。
-7. ノード管理者は法律に定めのない限り、記事の内容が正しいこと、役に立つこと、
-   または不愉快でないことなどについて保証しない。
-8. ノード管理者は自分の管理するノードに対して、
-   特定のユーザ、特定のノード、全ての利用者または全てのノードが
-   一時的または永続的に接続できることを保証しない。
+It is based on the original work of  Gou(合)  Gou is a Japanese BBS software, used to create BBS and federate them using a P2P scheme.
+Gou is Pretty popular in Japan, even is not that known in the western world.
+
+You can find the original Gou software [here](https://github.com/shingetsu-gou/shingetsu-gou)
+
+Or you can download executable binaries from [here](https://github.com/shingetsu-gou/shingetsu-gou/releases).
+
+All credits for this part are going to Gou.
+
+# What is now Ollyster and how it differs from Gou?
+
+1. In Gou all users are anonymous. Ollyster will add user identity. 
+2. Gou is not a Social Network, so there is no User Profile. Ollyster will add one.
+3. Gou has no personal stream, Ollyster will add one as a local "BBS"
+4. Gou represents data as a list of BBS, Ollyster will represent it as a personal, social stream.
+
+# How Ollyster is different from GNU Social, Friendi.ca &co?
+
+1. No dependencies. No Mysql, no apache, no curl,  no libraries, just go, golang and an executable.
+2. No PHP: get rid of ~400 security issues included with PHP.
+3. No "Ostatus". This protocol sucks, end of story. 
+4. Just unzip on disk , compile and run. Compile is what we do in go: "go get; go build" . That's it.

@@ -3,28 +3,43 @@
  */}}
 {{define "top"}}
 {{$root:=.}}
-<div style="background:url(/arazuki_saku.png) no-repeat 100% 0%;">
-<ul class="topmenu">
-  <li>{{.GatewayLink.Render .GatewayCGI "changes"}}</li>
-  <li>{{.GatewayLink.Render .GatewayCGI "index"}}</li>
-{{ if or .IsFriend .IsAdmin }}
-  <li>{{.GatewayLink.Render .GatewayCGI "recent"}}</li>
-  <li>{{.GatewayLink.Render .GatewayCGI "new"}}</li>
-{{ end }}
-{{ if .IsAdmin }}
-  <li>{{.GatewayLink.Render .AdminCGI "search"}}</li>
-  <li>{{.GatewayLink.Render .AdminCGI "status"}}</li>
-{{ end }}
-<li><a href="http://www.Shingetsu.Info/">{{.Message.site}}</a></li>
-<li><a href="{{.GatewayCGI}}/motd">{{.Message.agreement}}</a></li>
-{{ if .MchURL }}
-  <li><a href="{{.MchURL}}">{{.Message.mch}}</a></li>
-{{ end }}
-<li><a href="{{.GatewayCGI}}/rss">{{.Message.rss}}</a></li>
-</ul>
+</div>
 
-<h2>{{.Message.recent_changes}}</h2>
-<ul id="top_index">
+<div class="row">
+
+  <div class="col-md-2"> </div>
+
+<div class="col-md-2"> 
+
+<div class="panel panel-default">
+<div class="panel-body"> Functions </div>
+  <!-- List group -->
+  <ul class="list-group"> 
+{{ if .IsAdmin }}
+  <li class="list-group-item">WARNING: ADMIN!</li> 
+  <li class="list-group-item">{{.GatewayLink.Render .AdminCGI "search"}}</li>
+  <li class="list-group-item">{{.GatewayLink.Render .AdminCGI "status"}}</li>
+  
+{{ end }}
+<li class="list-group-item"><a href="http://www.Shingetsu.Info/">{{.Message.site}}</a></li>
+<li class="list-group-item"><a href="{{.GatewayCGI}}/motd">{{.Message.agreement}}</a></li>
+{{ if .MchURL }}
+  <li class="list-group-item"><a href="{{.MchURL}}">{{.Message.mch}}</a></li>
+{{ end }}
+		
+
+
+</ul>
+</div>
+</div>
+
+<div class="col-md-4"> 
+<div class="panel panel-default">
+ 
+  <div class="panel-body"> {{.Message.recent_changes}}</div>
+
+
+<ul class="list-group" id="top_index">
 {{ range $cache:=.Cachelist }}
     {{$root.ListItem.Render $cache false $root.Target false}}
 {{ end }}
@@ -51,5 +66,13 @@
   {{ end }}
   </ul>
 {{ end }}
-{{end}}
+
 </div>
+</div>
+
+
+
+<div class="col-md-2"> 
+
+{{end}}
+

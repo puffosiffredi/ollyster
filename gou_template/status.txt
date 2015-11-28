@@ -3,6 +3,7 @@
  */}}
 {{define "status"}}
 {{$root:=.}}
+</div>
 <table summary="{{.Message.status}}" class="solid">
 {{ range $k,$v:=.Status }}
   <tr><td>{{index $root.Message $k}}</td><td>{{$v}}</td></tr>

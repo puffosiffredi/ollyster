@@ -5,18 +5,53 @@
 {{ if .ID}}
   <aside class="navbar-collapse" id="{{.ID}}">
 {{ else }}
-  <aside class="navbar-collapse">
+  <aside class="navbar-collapse" >
 {{ end }}
-<ul class="nav nav-pills navbar-nav">
-  <li><a href="{{.GatewayCGI}}">{{.Message.top}}</a></li>
+
+<div class="row">
+	<div class="col-md-1">
+  </div>
+   <div class="col-md-10"> 
+<nav class="navbar navbar-inverse ">
+      <div class="container">
+        <div class="navbar-header">
+		
+<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Ollyster</a>
+        </div>
+		<div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="{{.GatewayCGI}}">{{.Message.top}}</a></li>
     <li>{{.GatewayLink.Render .GatewayCGI "changes"}}</li>
     <li>{{.GatewayLink.Render .GatewayCGI "index"}}</li>
+	
   {{ if or .IsFriend .IsAdmin }}
     <li>{{.GatewayLink.Render .GatewayCGI "recent"}}</li>
-    <li>{{.GatewayLink.Render .GatewayCGI "new"}}</li>
-  {{ end }}
-  <li><a href="{{.RSS}}">{{.Message.rss}}</a></li>
-</ul>
+  {{ end }}		
+   <li><a href="{{.RSS}}">{{.Message.rss}}</a></li>			
+                </ul>
+			
+				
+				
+		</div>		
+            </div>
+        
+      </div>
+    </nav>
+
+<div class="col-md-1">
+  </div>
+
+
+
 
 </aside>
+<div style="visibility: hidden">
+
 {{end}}

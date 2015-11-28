@@ -254,10 +254,10 @@ func (d *DatakeyTable) MakeDat(ca *thread.Cache, board, host string) []string {
 		}
 		name := rec.GetBodyValue("name", "")
 		if name == "" {
-			name = "名無しさん"
+			name = "NO NAME"
 		}
 		if rec.GetBodyValue("pubkey", "") != "" {
-			name += "◆" + rec.GetBodyValue("pubkey", "")[:10]
+			name += "-" + rec.GetBodyValue("pubkey", "")[:10]
 		}
 		comment := fmt.Sprintf("%s<>%s<>%s<>%s<>",
 			name, rec.GetBodyValue("main", ""), util.Datestr2ch(rec.Stamp), d.MakeBody(rec, host, board, table))

@@ -3,7 +3,11 @@
  */}}
 {{define "list_item"}}
 {{$root:=.}}
-<li>
+
+
+
+
+<li class="list-group-item">
 {{ if and .IsAdmin .Remove }}
   <label style="display:inline-block">
   <input type="checkbox" name="file" value="{{.Cache.Datfile}}" style="display:inline-block" />
@@ -30,4 +34,5 @@
   </span>
 {{ end }}
 </li>
+
 {{end}}

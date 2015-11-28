@@ -39,11 +39,8 @@
 {{if .Menubar}}
 {{template "menubar" .Menubar}}
 {{end}}
-<div class="container">
 
-{{ if .IsThread }}
-  <h1><a href="{{.ThreadCGI}}/{{strEncode .Title}}">{{escapeSpace .Title}}</a></h1>
-{{ else }}
-  <h1><a href="">{{escapeSpace .Title}}</a></h1>
-{{ end }}
+
+
+
 {{end}}

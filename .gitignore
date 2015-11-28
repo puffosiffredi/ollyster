@@ -15,4 +15,7 @@
 ollyster
 *.exe
 
-log/*
+log/
+cache/
+run/
+

@@ -3,10 +3,18 @@
  */}}
 {{define "page_navi"}}
 {{$root:=.}}
+</div>
+
+
+
+
 {{ if .CacheLen}}|{{ end }}
 {{ if or .Page .ID }}
   <a href="{{.ThreadCGI}}/{{strEncode .Path}}">{{.Message.last_page}}</a>
 {{ end }}
+
+
+
 {{ if gt .Page 1}}
   <a href="{{.ThreadCGI}}/{{strEncode .Path}}/p{{sub .Page 1}}">{{.Message.new_page}}</a>
 {{ end }}
@@ -27,4 +35,7 @@
 {{ if and (not .ID) (lt $ppp .CacheLen )}}
      <a href="{{.ThreadCGI}}/{{strEncode .Path}}/p{{add .Page 1}}">{{.Message.old_page}}</a>
 {{ end }}
+
+
+
 {{end}}

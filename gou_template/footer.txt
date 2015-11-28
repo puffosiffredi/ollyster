@@ -3,14 +3,40 @@
  */}}
 {{define "footer"}}
 </div>
-{{ if .Menubar }}
-  {{template "menubar" .Menubar}}
-{{ end }}
+  
+</div>
 
-<div class="address">Powered by 
-  <a href="http://www.Shingetsu.Info/">shinGETsu</a>
-<div class="address"><img src="/gou.png" width=5%></div>
-<div class="address"><a href="https://github.com/shingetsu-gou/shingetsu-gou">Gou {{.Version}}</a>.</div>
+
+<div class="row">
+  <div class="col-md-2"></div>
+  <div class="col-md-8">   
+
+
+        <footer>
+		
+		<div class="panel panel-default">
+  
+  
+   <div class="panel-body">
+    This is Ollyster BBS , a modified version of <a href="http://www.Shingetsu.Info/">Gou</a>.
+	
+  </div>
+   
+</div>
+	
+
+	
+	
+        </footer>
+		
+		
+</div>
+  <div class="col-md-2"></div>
+</div>		
+
+
+
+
 </body>
 </html>
 {{end}}
