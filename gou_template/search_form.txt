@@ -4,8 +4,31 @@
 
 {{define "search_form"}}
 </div>
+
+
+<div class="row">
+
+<div class="col-md-2">
+  </div>
+  
+<div class="col-md-8"> 
+
+
 <form method="get" action="{{.AdminCGI}}/search"><p>
-<input type="submit" value="{{.Message.search}}" />
-{{.Message.regexp}}:<input name="query" size="40" value="{{.Query}}" />
+
+<div class="input-group">
+
+<span class="input-group-addon" id="basic-addon1">{{.Message.regexp}}:</span>
+<input name="query" size="40" value="{{.Query}}" />
+</div>
+<br>
+<input type="submit" value="{{.Message.search}}  " />
 </p></form>
+
+</div>
+<div class="col-md-2">
+  </div>
+
+</div>
+
 {{end}}
