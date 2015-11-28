@@ -4,17 +4,38 @@
 {{define "status"}}
 {{$root:=.}}
 </div>
-<table summary="{{.Message.status}}" class="solid">
+
+<div class="row">
+
+<div class="col-md-2">
+  </div>
+  
+<div class="col-md-8"> 
+
+
+
+<table summary="{{.Message.status}}" class="table table-striped">
 {{ range $k,$v:=.Status }}
   <tr><td>{{index $root.Message $k}}</td><td>{{$v}}</td></tr>
 {{ end }}
 </table>
+
+
+
 {{ range $k,$v:=.NodeStatus }}
-  <h2>{{index $root.Message $k}}</h2>
-  <ul>
+  
+  <ul class="list-group">
+   <li class="list-group-item">{{index $root.Message $k}}</li>
   {{ range $node:=$v }}
-    <li>{{$node}}</li>
+    <li class="list-group-item">{{$node}}</li>
   {{ end }}
   </ul>
 {{ end }}
+
+</div>
+</div>
+
+
+
+
 {{end}}
