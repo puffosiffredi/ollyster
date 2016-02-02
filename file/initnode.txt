@@ -1,7 +1,0 @@
-#
-# Initial Node List for Saku.
-#
-#boseburo.ddns.net:8000/server.cgi
-#vulvatron:8000/server.cgi
-node.shingetsu.info:8000/server.cgi
-rep4649.ddo.jp:8000/server.cgi
