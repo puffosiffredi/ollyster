@@ -4,18 +4,20 @@ import (
 	"html"
 	"log"
 	"net/http"
+	"ollyster/irc"
 	"ollyster/tools"
 )
 
 func init() {
 
 	tools.Log_Engine_Start()
+	irc.IrcInitialize()
 
 }
 
 func main() {
 	// Simple static webserver:
-	log.Println("Starting http server on port 8181...")
+	log.Println("[WEB] Starting http server on port 8181...")
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/static/", ServeStatic)
@@ -30,7 +32,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 
 	http.Redirect(w, r, "/static", http.StatusMovedPermanently)
 
-	log.Printf("Hello, %q\n", html.EscapeString(r.URL.Path))
+	log.Printf("[WEB] Hello, %q\n", html.EscapeString(r.URL.Path))
 
 }
 
@@ -38,8 +40,8 @@ func home(w http.ResponseWriter, r *http.Request) {
 func ServeStatic(w http.ResponseWriter, r *http.Request) {
 
 	HttpRoot := tools.Hpwd()
-	log.Println("DocumentRoot: ", HttpRoot)
-	log.Println("Serving: ", r.URL.Path)
+	log.Println("[WEB] DocumentRoot: ", HttpRoot)
+	log.Println("[WEB] Serving: ", r.URL.Path)
 	http.ServeFile(w, r, HttpRoot+r.URL.Path)
 
 }
@@ -48,8 +50,8 @@ func ServeStatic(w http.ResponseWriter, r *http.Request) {
 func ServeNetwork(w http.ResponseWriter, r *http.Request) {
 
 	HttpRoot := tools.Hpwd()
-	log.Println("DocumentRoot: ", HttpRoot)
-	log.Println("Serving: ", r.URL.Path)
+	log.Println("[WEB] DocumentRoot: ", HttpRoot)
+	log.Println("[WEB] Serving: ", r.URL.Path)
 	http.ServeFile(w, r, HttpRoot+"/static/network.html")
 
 }
