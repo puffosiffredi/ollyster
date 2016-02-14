@@ -1,6 +1,7 @@
 package files
 
 import (
+	"io/ioutil"
 	"log"
 	"ollyster/tools"
 	"os"
@@ -13,6 +14,7 @@ type ollysterSocial struct {
 	streamname string
 	streampath string
 	streamfile *os.File
+	template   string
 }
 
 var MyStream ollysterSocial
@@ -109,6 +111,66 @@ func (this *ollysterSocial) WriteMsgPriv(ev string, ms string) {
 		log.Println("[TXT] Error writing file:", err)
 		this.streamfile.Close()
 	}
+
+}
+
+// RetrieveStringFromFile returns a file into a single string
+// useful to retrieve the content and shoot into the home page
+func (this *ollysterSocial) RetrieveStreamString() string {
+
+	content, err := ioutil.ReadFile(this.streamname)
+	if err != nil {
+		return "EMPTY FILE"
+	}
+
+	return string(content)
+
+}
+
+// RetrieveTempl returns a file into a single string
+// useful to retrieve the content and shoot into the home page
+func (this *ollysterSocial) RetrieveTempl() string {
+
+	content, err := ioutil.ReadFile(this.template)
+	if err != nil {
+		return "EMPTY FILE"
+	}
+
+	return string(content)
+
+}
+
+// Method to access template
+func (this *ollysterSocial) SetTemplateFile(tmpl string) {
+
+	this.template = tmpl
+
+}
+
+// AddLineToFile : appends one line to the given file.
+// only when the line doesn't exists already
+// useful when adding groups on the list of groups, or users to the list of users
+func (this *ollysterSocial) AddLineToFile(line string) error {
+
+	content, err := ioutil.ReadFile(this.streamname)
+	if err != nil {
+		return err
+	}
+
+	contentString := string(content)
+
+	if strings.Contains(contentString, line) == false {
+
+		contentString += "\n" + line
+
+	}
+
+	err = ioutil.WriteFile(this.streamname, []byte(contentString), 0755)
+	if err != nil {
+		return err
+	}
+
+	return nil
 
 }
 
