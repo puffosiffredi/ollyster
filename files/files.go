@@ -120,7 +120,7 @@ func (this *ollysterSocial) RetrieveStreamString() string {
 
 	content, err := ioutil.ReadFile(this.streamname)
 	if err != nil {
-		return "EMPTY FILE"
+		return "<!-- EMPTY FILE -->"
 	}
 
 	return string(content)
@@ -133,7 +133,7 @@ func (this *ollysterSocial) RetrieveTempl() string {
 
 	content, err := ioutil.ReadFile(this.template)
 	if err != nil {
-		return "EMPTY FILE"
+		return "<!-- EMPTY FILE -->"
 	}
 
 	return string(content)
