@@ -4,6 +4,8 @@ import (
 	"html"
 	"log"
 	"net/http"
+	"ollyster/conf"
+	"ollyster/files"
 	"ollyster/irc"
 	"ollyster/tools"
 )
@@ -11,20 +13,22 @@ import (
 func init() {
 
 	tools.Log_Engine_Start()
+	files.StreamEngineStart()
+	conf.StartConfig()
 	irc.IrcInitialize()
 
 }
 
 func main() {
 	// Simple static webserver:
-	log.Println("[WEB] Starting http server on port 8181...")
+	log.Println("[WEB] Starting http server ...")
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/static/", ServeStatic)
 	mux.HandleFunc("/network/", ServeNetwork)
 	mux.HandleFunc("/", home)
 
-	log.Fatal(http.ListenAndServe(":8181", mux))
+	log.Fatal(http.ListenAndServe(":"+conf.OConfig["webport"], mux))
 }
 
 //cath-all function for sending people back to homepage.

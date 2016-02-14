@@ -15,3 +15,4 @@
 ollyster
 *.exe
 logs/*
+data/*

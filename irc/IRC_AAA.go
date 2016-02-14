@@ -4,7 +4,10 @@ import (
 	"bufio"
 	"log"
 	"net"
+	"ollyster/conf"
+	"ollyster/files"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -20,22 +23,22 @@ type IrcServer struct {
 	protocol   string // can be tcp4, tcp6 , tcp (automatic detect)
 	delay      int    // milliseconds to wait when sending Dial commands
 	heartbeat  int    // keepalive in seconds
-	channel    string
+	channel    string // the channel to join
 }
 
 func init() {
 
 	var MyServer IrcServer
 
-	// Still populating them manually. TODO: load values from ./etc
-	MyServer.servername = "irc.freenode.net"
-	MyServer.serverport = "8000"
-	MyServer.serveraddr = "91.217.189.42"
-	MyServer.nickname = "Ollyster"
-	MyServer.protocol = "tcp4"
-	MyServer.delay = 3000
-	MyServer.heartbeat = 20
-	MyServer.channel = "#social"
+	// taken by the conf file
+	MyServer.servername = conf.OConfig["servername"]
+	MyServer.serverport = conf.OConfig["serverport"]
+	MyServer.serveraddr = conf.OConfig["serveraddr"]
+	MyServer.nickname = conf.OConfig["nickname"]
+	MyServer.protocol = conf.OConfig["protocol"]
+	MyServer.delay, _ = strconv.Atoi(conf.OConfig["delay"])
+	MyServer.heartbeat, _ = strconv.Atoi(conf.OConfig["heartbeat"])
+	MyServer.channel = conf.OConfig["channel"]
 
 	go MyServer.ircClient()
 
@@ -85,18 +88,34 @@ func (this *IrcServer) ircClient() {
 		// :nick!user@ip-address PRIVMSG your-nick :Message
 		privMsgString := "(?i)^:.*!.*PRIVMSG.*" + this.nickname + " :.*$"
 		if matches, _ := regexp.MatchString(privMsgString, message); matches == true {
+			payload := strings.TrimLeft(message, ":") // starting a payload with a separator? WTF?
 			sinta := strings.Split(message, "!")
-			payload := strings.Split(sinta[1], ":")
-			log.Printf("[IRC] Private message from %s:  <%s>", strings.TrimLeft(sinta[0], ":"), payload[1])
+			sender := strings.TrimLeft(sinta[0], ":")
+			// sender contains the sender nick
+
+			torn := strings.Split(payload, ":")
+			msg := strings.Join(torn[1:], ":")
+			// msg contains the message after the 1st colon
+
+			files.MyStream.WriteMsgPriv(sender, msg)
+			log.Printf("[IRC] Private message from %s:  <%s>", sender, msg)
 			continue
 		}
 
 		// :nick!user@ip-address PRIVMSG #channel :Message
 		chanMsgString := "(?i)^:.*!.*PRIVMSG.*" + this.channel + " :.*$"
 		if matches, _ := regexp.MatchString(chanMsgString, message); matches == true {
+			payload := strings.TrimLeft(message, ":") // starting a payload with a separator? WTF?
 			sinta := strings.Split(message, "!")
-			payload := strings.Split(sinta[1], ":")
-			log.Printf("[IRC] %s sent a message to %s:  <%s>", strings.TrimLeft(sinta[0], ":"), this.channel, payload[1])
+			sender := strings.TrimLeft(sinta[0], ":")
+			// sender contains the sender nick
+
+			torn := strings.Split(payload, ":")
+			msg := strings.Join(torn[1:], ":")
+			// msg contains the message after the 1st colon
+
+			log.Printf("[IRC] %s sent a message to %s:  <%s>", sender, this.channel, msg)
+			files.MyStream.WriteMsgGroup(sender, this.channel, msg)
 			continue
 		}
 
