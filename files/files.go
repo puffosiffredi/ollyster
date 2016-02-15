@@ -55,10 +55,10 @@ func (this *ollysterSocial) WriteMsgGroup(ev string, gr string, ms string) {
 
 	const socialEvent = `
 	<li class="list-group-item list-group-item-info">	
-	<h4 class="list-group-item-heading">{{.Author}} posted on {{.Group}}</h4>
+	<h4 class="list-group-item-heading"><b>{{.Author}}</b> posted on {{.Group}}</h4>
 	<hr>
-    <p class="list-group-item-text">{{.Message}}</p>			
-	</li> `
+    <p class="list-group-item-text">{{.Message}}</p></li>	
+	<li class="list-group-item"> </li>`
 
 	this.streamfile, err = os.OpenFile(this.streamname, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
 	if err != nil {
@@ -83,7 +83,8 @@ func (this *ollysterSocial) WriteMsgPriv(ev string, ms string) {
 	<h4 class="list-group-item-heading">Private message from <b>{{.Author}}</b></h4>
 	<hr>
     <p class="list-group-item-text">{{.Message}}</p>			
-	</li> `
+	</li>
+	<li class="list-group-item"> </li> `
 
 	eventString := string(socialEvent)
 
