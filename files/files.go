@@ -14,7 +14,6 @@ type ollysterSocial struct {
 	streamname string
 	streampath string
 	streamfile *os.File
-	template   string
 }
 
 var MyStream ollysterSocial
@@ -72,20 +71,12 @@ func (this *ollysterSocial) WriteMsgGroup(ev string, gr string, ms string) {
 	eventString = strings.Replace(eventString, "{{.Group}}", gr, 1)
 	eventString = strings.Replace(eventString, "{{.Message}}", ms, 1)
 
-	_, err = this.streamfile.WriteString(eventString)
-	if err == nil {
-		this.streamfile.Close()
-	} else {
-		log.Println("[TXT] Error writing file:", err)
-		this.streamfile.Close()
-	}
+	this.AddLineTopFile(eventString)
 
 }
 
 // writes down messages for the group
 func (this *ollysterSocial) WriteMsgPriv(ev string, ms string) {
-
-	var err error
 
 	const socialEvent = `
 	<li class="list-group-item list-group-item-success">	
@@ -99,18 +90,7 @@ func (this *ollysterSocial) WriteMsgPriv(ev string, ms string) {
 	eventString = strings.Replace(eventString, "{{.Author}}", ev, 1)
 	eventString = strings.Replace(eventString, "{{.Message}}", ms, 1)
 
-	this.streamfile, err = os.OpenFile(this.streamname, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
-	if err != nil {
-		log.Println("[TXT] Error opening file ", err)
-	}
-
-	_, err = this.streamfile.WriteString(eventString)
-	if err == nil {
-		this.streamfile.Close()
-	} else {
-		log.Println("[TXT] Error writing file:", err)
-		this.streamfile.Close()
-	}
+	this.AddLineTopFile(eventString)
 
 }
 
@@ -127,43 +107,17 @@ func (this *ollysterSocial) RetrieveStreamString() string {
 
 }
 
-// RetrieveTempl returns a file into a single string
-// useful to retrieve the content and shoot into the home page
-func (this *ollysterSocial) RetrieveTempl() string {
-
-	content, err := ioutil.ReadFile(this.template)
-	if err != nil {
-		return "<!-- EMPTY FILE -->"
-	}
-
-	return string(content)
-
-}
-
-// Method to access template
-func (this *ollysterSocial) SetTemplateFile(tmpl string) {
-
-	this.template = tmpl
-
-}
-
 // AddLineToFile : appends one line to the given file.
 // only when the line doesn't exists already
 // useful when adding groups on the list of groups, or users to the list of users
-func (this *ollysterSocial) AddLineToFile(line string) error {
+func (this *ollysterSocial) AddLineTopFile(line string) error {
 
 	content, err := ioutil.ReadFile(this.streamname)
 	if err != nil {
 		return err
 	}
 
-	contentString := string(content)
-
-	if strings.Contains(contentString, line) == false {
-
-		contentString += "\n" + line
-
-	}
+	contentString := line + "\n" + string(content)
 
 	err = ioutil.WriteFile(this.streamname, []byte(contentString), 0755)
 	if err != nil {

@@ -88,16 +88,18 @@ func (this *IrcServer) ircClient() {
 		// :nick!user@ip-address PRIVMSG your-nick :Message
 		privMsgString := "(?i)^:.*!.*PRIVMSG.*" + this.nickname + " :.*$"
 		if matches, _ := regexp.MatchString(privMsgString, message); matches == true {
-			payload := strings.TrimLeft(message, ":") // starting a payload with a separator? WTF?
+
 			sinta := strings.Split(message, "!")
 			sender := strings.TrimLeft(sinta[0], ":")
 			// sender contains the sender nick
 
-			torn := strings.Split(payload, ":")
+			field := strings.Split(message, "PRIVMSG")
+			torn := strings.Split(field[1], ":")
 			msg := strings.Join(torn[1:], ":")
 			// msg contains the message after the 1st colon
 
 			files.MyStream.WriteMsgPriv(sender, msg)
+
 			log.Printf("[IRC] Private message from %s:  <%s>", sender, msg)
 			continue
 		}
@@ -105,12 +107,13 @@ func (this *IrcServer) ircClient() {
 		// :nick!user@ip-address PRIVMSG #channel :Message
 		chanMsgString := "(?i)^:.*!.*PRIVMSG.*" + this.channel + " :.*$"
 		if matches, _ := regexp.MatchString(chanMsgString, message); matches == true {
-			payload := strings.TrimLeft(message, ":") // starting a payload with a separator? WTF?
+
 			sinta := strings.Split(message, "!")
 			sender := strings.TrimLeft(sinta[0], ":")
 			// sender contains the sender nick
 
-			torn := strings.Split(payload, ":")
+			field := strings.Split(message, "PRIVMSG")
+			torn := strings.Split(field[1], ":")
 			msg := strings.Join(torn[1:], ":")
 			// msg contains the message after the 1st colon
 

@@ -6,7 +6,6 @@ import (
 	"net/http"
 	fi "ollyster/files"
 	"ollyster/tools"
-	fp "path/filepath"
 	"strings"
 )
 
@@ -34,12 +33,10 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	log.Println("[WEB] DocumentRoot: ", HttpRoot)
 	log.Println("[WEB] Home Serving: ", r.URL.Path)
 	// http.ServeFile(w, r, HttpRoot+r.URL.Path)
-
-	fi.MyStream.SetTemplateFile(fp.Join(HttpRoot, "static", "index.html"))
+	
 	contents := fi.MyStream.RetrieveStreamString()
-	tmplate := fi.MyStream.RetrieveTempl()
-
-	pageString := strings.Replace(tmplate, "{{.Contents}}", contents, 1)
+	
+	pageString := strings.Replace(OTemplates.indextmpl, "{{.Contents}}", contents, 1)
 	io.WriteString(w, pageString)
 
 }

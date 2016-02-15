@@ -13,7 +13,9 @@ import (
 func init() {
 
 	tools.Log_Engine_Start()
+	web.InitTmpl()
 	files.StreamEngineStart()
+
 	conf.StartConfig()
 	irc.IrcInitialize()
 
@@ -21,7 +23,7 @@ func init() {
 
 func main() {
 	// Simple static webserver:
-	log.Println("[WEB] Starting http server on port" + conf.OConfig["webport"])
+	log.Println("[WEB] Starting http server on port " + conf.OConfig["webport"])
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/static/", web.ServeStatic)
