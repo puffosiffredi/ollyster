@@ -51,21 +51,7 @@ func (this *ollysterSocial) RotateSocialFolder() {
 // writes down messages for the group
 func (this *ollysterSocial) WriteMsgGroup(ev string, gr string, ms string) {
 
-	var err error
-
-	const socialEvent = `
-	<li class="list-group-item list-group-item-info">	
-	<h4 class="list-group-item-heading"><b>{{.Author}}</b> posted on {{.Group}}</h4>
-	<hr>
-    <p class="list-group-item-text">{{.Message}}</p></li>	
-	<li class="list-group-item"> </li>`
-
-	this.streamfile, err = os.OpenFile(this.streamname, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
-	if err != nil {
-		log.Println("[TXT] Error opening file ", err)
-	}
-
-	eventString := string(socialEvent)
+	eventString := MyOllysterMsg.AzureTmpl
 
 	eventString = strings.Replace(eventString, "{{.Author}}", ev, 1)
 	eventString = strings.Replace(eventString, "{{.Group}}", gr, 1)
@@ -78,15 +64,7 @@ func (this *ollysterSocial) WriteMsgGroup(ev string, gr string, ms string) {
 // writes down messages for the group
 func (this *ollysterSocial) WriteMsgPriv(ev string, ms string) {
 
-	const socialEvent = `
-	<li class="list-group-item list-group-item-success">	
-	<h4 class="list-group-item-heading">Private message from <b>{{.Author}}</b></h4>
-	<hr>
-    <p class="list-group-item-text">{{.Message}}</p>			
-	</li>
-	<li class="list-group-item"> </li> `
-
-	eventString := string(socialEvent)
+	eventString := MyOllysterMsg.GreenTmpl
 
 	eventString = strings.Replace(eventString, "{{.Author}}", ev, 1)
 	eventString = strings.Replace(eventString, "{{.Message}}", ms, 1)

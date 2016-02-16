@@ -15,6 +15,7 @@ func init() {
 	tools.Log_Engine_Start()
 	web.InitTmpl()
 	files.StreamEngineStart()
+	files.InitMsgTmpl()
 
 	conf.StartConfig()
 	irc.IrcInitialize()
