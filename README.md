@@ -14,6 +14,8 @@ I think we can have social-like clients for mail or NNTP protocol also, but I ch
 since it is robust, widely used, I repeat **very** used (who says "IRC is dead" is just a stupid, 
 go and check instead of lecturing your ignorance! ).
 
+Also it is realtime and volatile. Which is good both for usability (realtime) and for privacy (volatile)
+
 I will use the messaging protocol as a backbone, and the CTCP extension to add social-like
 behaviors.
 
