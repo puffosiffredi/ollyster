@@ -11,10 +11,10 @@ exists.
 Movim is the name of a social network built on top of Xmpp (Jabber).
 
 I think we can have social-like clients for mail or NNTP protocol also, but I choose IRC,
-since it is robust, widely used, I repeat *very* used (who says "IRC is dead" is just a stupid, 
+since it is robust, widely used, I repeat **very** used (who says "IRC is dead" is just a stupid, 
 go and check instead of lecturing your ignorance! ).
 
-So I will use the messaging protocol as a backbone, and the CTCP extension to add social-like
+I will use the messaging protocol as a backbone, and the CTCP extension to add social-like
 behaviors.
 
 So:
