@@ -1,5 +1,5 @@
 # ollyster
-WEB-BASED IRC client, with a Social Flavour.
+SELF-Hosted, WEB-BASED IRC client, with a Social Flavour.
 
 My challenge here was to proof something I realized time ago: a "social network" 
 is just a web interface to a program which allows people to message each others.
