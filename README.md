@@ -42,9 +42,9 @@ Done.
 
 ##TODO
 
-1. ~IRC interface~
-2. ~WEB interface~ 
-3. ~Timeline page~
+1. ~~IRC interface~~
+2. ~~WEB interface~~ 
+3. ~~Timeline page~~
 4. Groups page 
 5. Form to edit configuration via web and not manually.
 6. Form to edit profile via web and not manually.
