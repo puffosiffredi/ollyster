@@ -23,3 +23,28 @@ So:
     Phase 2: Wev IRC client + CTCP (Social features, like icons and so).
 
 
+To install it:
+
+just go into a folder, and _git clone https://github.com/uriel-fanelli/ollyster.git_
+
+Then enter /etc and edit both the config file  (ollyster.conf) and the profile (profile.conf).
+
+**ALL FIELDS ARE MANDATORY ** (I will make it more tolerant later)
+
+Maybe you want to change the avatar also, in static/avatars/default.png 
+
+Run "go build"
+Run ./ollyster
+
+Point your browser to the port you setup in ollyster.conf as _webport_, like  localhost:_webport_
+
+Done.
+
+##TODO
+
+1. Groups page 
+2. Form to edit configuration via web and not manually.
+3. Form to edit profile via web and not manually.
+4. Form to answer the messages on the "Timeline" page.
+5. CTCP commands to get icons, email, website, and so, from the other ollyster clients.
+
