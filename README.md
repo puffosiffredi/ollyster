@@ -42,9 +42,12 @@ Done.
 
 ##TODO
 
-1. Groups page 
-2. Form to edit configuration via web and not manually.
-3. Form to edit profile via web and not manually.
-4. Form to answer the messages on the "Timeline" page.
-5. CTCP commands to get icons, email, website, and so, from the other ollyster clients.
+1. ~IRC interface~
+2. ~WEB interface~ 
+3. ~Timeline page~
+4. Groups page 
+5. Form to edit configuration via web and not manually.
+6. Form to edit profile via web and not manually.
+7. Form to answer the messages on the "Timeline" page.
+8. CTCP commands to get icons, email, website, and so, from the other ollyster clients.
 
