@@ -28,7 +28,7 @@ var MyStream ollysterSocial
 
 func init() {
 
-	MyStream.Channelbuf = "<!--Placeholder for the list of groups-->"
+	MyStream.InitializeChanList()
 	MyStream.streampath = filepath.Join(tools.Hpwd(), "data")
 	log.Println("[TXT] Streampath is: " + MyStream.streampath)
 	err := os.MkdirAll(filepath.Join(MyStream.streampath), 0755)
@@ -140,7 +140,17 @@ func (this *ollysterSocial) AddLineTopFile(line string) error {
 
 }
 
-// AddUniqueChannel adds a channel to the channel buffer if it doesn't exists.
+// AddUniqueChannel adds a channel to the channel buffer 
+
+func (this *ollysterSocial) InitializeChanList(){
+
+	this.Channelbuf = "<!----Here we initialized it---->"
+
+
+}
+
+
+// AddUniqueChannel adds a channel to the channel buffer 
 
 func (this *ollysterSocial) AddUniqueChannel(channelline string) error {
 

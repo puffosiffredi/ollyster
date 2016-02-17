@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 	"ollyster/conf"
+	"ollyster/files"
 	"strconv"
 	"time"
 )
@@ -107,7 +108,9 @@ func (this *IrcServer) ircDial() {
 		time.Sleep(time.Duration(this.delay) * time.Millisecond)
 		log.Println("[AAA] AAA terminated, now joining")
 		this.IrcCmd("JOIN " + this.channel)
+
 		time.Sleep(time.Duration(this.delay) * time.Millisecond)
+		files.MyStream.InitializeChanList()
 		log.Println("[AAA] Asking for a list of channels")
 		this.IrcCmd("LIST >" + this.min_chanlist + ",<10000")
 
