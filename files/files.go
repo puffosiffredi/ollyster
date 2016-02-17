@@ -97,6 +97,19 @@ func (this *ollysterSocial) WriteMsgGroup(ev string, gr string, ms string) {
 }
 
 // writes down messages for the group
+func (this *ollysterSocial) WriteMsgMention(ev string, gr string, ms string) {
+
+	eventString := MyOllysterMsg.RedTmpl
+
+	eventString = strings.Replace(eventString, "{{.Author}}", ev, 1)
+	eventString = strings.Replace(eventString, "{{.Group}}", gr, 1)
+	eventString = strings.Replace(eventString, "{{.Message}}", ms, 1)
+
+	this.AddLineTopFile(eventString)
+
+}
+
+// writes down messages for the group
 func (this *ollysterSocial) WriteMsgPriv(ev string, ms string) {
 
 	eventString := MyOllysterMsg.GreenTmpl
@@ -107,6 +120,8 @@ func (this *ollysterSocial) WriteMsgPriv(ev string, ms string) {
 	this.AddLineTopFile(eventString)
 
 }
+
+
 
 // RetrieveStringFromFile returns a file into a single string
 // useful to retrieve the content and shoot into the home page

@@ -14,7 +14,7 @@ func (this *IrcServer) IrcInterpreter(message string) {
 		sinta := strings.Split(message, ":")
 		this.socket.Write([]byte("PONG :" + sinta[1]))
 		log.Printf("[IRC] Sending back the -> %s", "PONG :"+sinta[1])
-
+		return
 	}
 
 	// :nick!user@ip-address PRIVMSG your-nick :VERSION
@@ -24,7 +24,7 @@ func (this *IrcServer) IrcInterpreter(message string) {
 		version := "NOTICE " + strings.TrimLeft(sinta[0], ":") + " : VERSION Ollyster DEV https://github.com/uriel-fanelli/ollyster"
 		this.socket.Write([]byte(version))
 		log.Printf("[IRC] Sending back the -> %s", version)
-
+		return
 	}
 
 	// :nick!user@ip-address PRIVMSG your-nick :Message
@@ -43,11 +43,29 @@ func (this *IrcServer) IrcInterpreter(message string) {
 		files.MyStream.WriteMsgPriv(sender, msg)
 
 		log.Printf("[IRC] Private message from %s:  <%s>", sender, msg)
-
+		return
 	}
 
 	// :nick!user@ip-address PRIVMSG #channel :Message
-	chanMsgString := "(?i)^:.*!.*PRIVMSG.*" + this.channel + " :.*$"
+	chanMsgString := "(?i)^:.*!.*PRIVMSG.*" + this.channel + " :.*" + this.nickname + ".*$"
+	if matches, _ := regexp.MatchString(chanMsgString, message); matches == true {
+
+		sinta := strings.Split(message, "!")
+		sender := strings.TrimLeft(sinta[0], ":")
+		// sender contains the sender nick
+
+		field := strings.Split(message, "PRIVMSG")
+		torn := strings.Split(field[1], ":")
+		msg := strings.Join(torn[1:], ":")
+		// msg contains the message after the 1st colon
+
+		log.Printf("[IRC] %s sent a message to %s:  <%s>", sender, this.channel, msg)
+		files.MyStream.WriteMsgMention(sender, this.channel, msg)
+		return
+	}
+
+	// :nick!user@ip-address PRIVMSG #channel :Message
+	chanMsgString = "(?i)^:.*!.*PRIVMSG.*" + this.channel + " :.*$"
 	if matches, _ := regexp.MatchString(chanMsgString, message); matches == true {
 
 		sinta := strings.Split(message, "!")
@@ -61,7 +79,7 @@ func (this *IrcServer) IrcInterpreter(message string) {
 
 		log.Printf("[IRC] %s sent a message to %s:  <%s>", sender, this.channel, msg)
 		files.MyStream.WriteMsgGroup(sender, this.channel, msg)
-
+		return
 	}
 
 	// :sinisalo.freenode.net 322 Ollyster #pld-git 3 :https://www.pld-linux.org/pld-git
@@ -76,7 +94,7 @@ func (this *IrcServer) IrcInterpreter(message string) {
 
 		log.Printf("[IRC] Registering channel :  <%s>", list[0])
 		files.MyStream.AddUniqueChannel(list_line)
-
+		return
 	}
 
 	// :sinisalo.freenode.net 323 Ollyster :End of /LIST
@@ -86,7 +104,7 @@ func (this *IrcServer) IrcInterpreter(message string) {
 		log.Printf("[IRC] Saving list of channels....")
 		files.MyStream.FlushChanList()
 		log.Printf("[IRC] Channel list registered")
-
+		return
 	}
 
 }
