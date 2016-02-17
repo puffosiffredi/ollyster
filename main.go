@@ -16,7 +16,6 @@ func init() {
 	web.InitTmpl()
 	files.StreamEngineStart()
 	files.InitMsgTmpl()
-
 	conf.StartConfig()
 	irc.IrcInitialize()
 

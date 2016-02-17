@@ -52,9 +52,8 @@ func Home(w http.ResponseWriter, r *http.Request) {
 //to hide logics behind of network.
 func ServeNetwork(w http.ResponseWriter, r *http.Request) {
 
-	HttpRoot := tools.Hpwd()
-	log.Println("[WEB] DocumentRoot: ", HttpRoot)
-	log.Println("[WEB] Serving: ", r.URL.Path)
-	http.ServeFile(w, r, HttpRoot+"/static/network.html")
+	sections := strings.Split(OTemplates.grouptmpl, "{{.Groups}}")
+
+	io.WriteString(w, sections[0]+fi.MyStream.Channelbuf+sections[1])
 
 }

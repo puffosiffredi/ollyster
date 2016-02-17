@@ -11,29 +11,37 @@ import (
 )
 
 type ollysterSocial struct {
+
+	// file needed for the stream
+
 	streamname string
 	streampath string
 	streamfile *os.File
+
+	//  file needed for the channel list
+
+	channelname string
+	Channelbuf  string
 }
 
 var MyStream ollysterSocial
 
 func init() {
-	go MyStream.RotateSocialFolder()
+
+	MyStream.Channelbuf = "<!--Placeholder for the list of groups-->"
+	MyStream.streampath = filepath.Join(tools.Hpwd(), "data")
+	log.Println("[TXT] Streampath is: " + MyStream.streampath)
+	err := os.MkdirAll(filepath.Join(MyStream.streampath), 0755)
+	if err != nil {
+		log.Printf("[TXT] Cannot create directory: %s", err)
+	} else {
+		go MyStream.RotateSocialFolder()
+	}
 
 }
 
 // rotates the name of streamfiles.
 func (this *ollysterSocial) RotateSocialFolder() {
-
-	this.streampath = filepath.Join(tools.Hpwd(), "data")
-	log.Println("[TXT] Streampath is: " + this.streampath)
-	err := os.MkdirAll(filepath.Join(this.streampath), 0755)
-
-	if err != nil {
-		log.Printf("[TXT] Cannot create directory: %s", err)
-
-	}
 
 	for {
 
@@ -41,17 +49,37 @@ func (this *ollysterSocial) RotateSocialFolder() {
 		orario := time.Now()
 
 		this.streamname = filepath.Join(this.streampath, "ollyster."+orario.Format(layout)+".html")
+		this.channelname = filepath.Join(this.streampath, "channels.txt")
+
+		log.Println("[TXT] Streamfile is now: " + this.streamname)
+		log.Println("[TXT] Channelfile is now: " + this.channelname)
+
+		// initializes the streamname if it doesn't exists
 
 		_, err := os.Stat(this.streamname)
 		if err != nil {
 			ioutil.WriteFile(this.streamname, []byte("<!---Rotation Engine was here -->"), 0755)
-			
+
 		}
 
-		log.Println("[TXT] Streamfile is: " + this.streamname)
+		_, err = os.Stat(this.channelname)
+		if err != nil {
+			ioutil.WriteFile(this.channelname, []byte("<!---Rotation Engine was here -->"), 0755)
+
+		}
+
 		time.Sleep(10 * time.Minute)
 
 	}
+
+}
+
+func (this *ollysterSocial) FlushChanList() {
+
+	// initialize the group file if it doesn't exists
+	// periodically flushes the channelbuf there
+
+	ioutil.WriteFile(this.channelname, []byte(this.Channelbuf), 0755)
 
 }
 
@@ -93,9 +121,7 @@ func (this *ollysterSocial) RetrieveStreamString() string {
 
 }
 
-// AddLineToFile : appends one line to the given file.
-// only when the line doesn't exists already
-// useful when adding groups on the list of groups, or users to the list of users
+// AddLineTopFile : appends one line to the given file, in reversed order, last one top
 func (this *ollysterSocial) AddLineTopFile(line string) error {
 
 	content, err := ioutil.ReadFile(this.streamname)
@@ -109,6 +135,16 @@ func (this *ollysterSocial) AddLineTopFile(line string) error {
 	if err != nil {
 		return err
 	}
+
+	return nil
+
+}
+
+// AddUniqueChannel adds a channel to the channel buffer if it doesn't exists.
+
+func (this *ollysterSocial) AddUniqueChannel(channelline string) error {
+
+	this.Channelbuf += "\n" + channelline
 
 	return nil
 

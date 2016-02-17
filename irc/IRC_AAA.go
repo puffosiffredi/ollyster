@@ -5,25 +5,23 @@ import (
 	"log"
 	"net"
 	"ollyster/conf"
-	"ollyster/files"
-	"regexp"
 	"strconv"
-	"strings"
 	"time"
 )
 
 //this is to contain all structs we need.
 //will be populated using ./etc
 type IrcServer struct {
-	servername string
-	serverport string
-	serveraddr string
-	nickname   string
-	socket     *net.TCPConn
-	protocol   string // can be tcp4, tcp6 , tcp (automatic detect)
-	delay      int    // milliseconds to wait when sending Dial commands
-	heartbeat  int    // keepalive in seconds
-	channel    string // the channel to join
+	servername   string
+	serverport   string
+	serveraddr   string
+	nickname     string
+	socket       *net.TCPConn
+	protocol     string // can be tcp4, tcp6 , tcp (automatic detect)
+	delay        int    // milliseconds to wait when sending Dial commands
+	heartbeat    int    // keepalive in seconds
+	channel      string // the channel to join
+	min_chanlist string // minimal amount of users for a channel to be listed
 }
 
 func init() {
@@ -39,6 +37,7 @@ func init() {
 	MyServer.delay, _ = strconv.Atoi(conf.OConfig["delay"])
 	MyServer.heartbeat, _ = strconv.Atoi(conf.OConfig["heartbeat"])
 	MyServer.channel = conf.OConfig["channel"]
+	MyServer.min_chanlist = conf.OConfig["min_chanlist"]
 
 	go MyServer.ircClient()
 
@@ -47,85 +46,32 @@ func init() {
 func (this *IrcServer) ircClient() {
 
 	this.ircDial()
+	reader := bufio.NewScanner(this.socket)
+	var message string = "NOOP" // always better to initialize I/O strings
 
-	linea := make([]byte, 1024)
-
-	for {
+	for reader.Scan() {
 
 		defer func() {
 			if e := recover(); e != nil {
-				this.socket.Close()
 				this.ircDial()
 			}
 		}()
 
-		var err error
-		var exceed bool
+		message = reader.Text()
 
-		reader := bufio.NewReader(this.socket)
+		err := reader.Err()
 
-		linea, exceed, err = reader.ReadLine()
-
-		message := string(linea)
-
-		if matches, _ := regexp.MatchString("(?i)^PING :.*$", message); matches == true {
-			log.Printf("[IRC] %s ", message)
-			sinta := strings.Split(message, ":")
-			this.socket.Write([]byte("PONG :" + sinta[1]))
-			log.Printf("[IRC] Sending back the -> %s", "PONG :"+sinta[1])
-			continue
+		if err != nil {
+			log.Println("[IRC] Error reading socket: %s ", err)
+			this.ircDial()
 		}
 
-		// :nick!user@ip-address PRIVMSG your-nick :VERSION
-		if matches, _ := regexp.MatchString("(?i)^:.*PRIVMSG.*VERSION$", message); matches == true {
-			sinta := strings.Split(message, "!")
-			log.Printf("[IRC] VERSION REQUEST from %s ", sinta[0])
-			version := "NOTICE " + strings.TrimLeft(sinta[0], ":") + " : VERSION Ollyster DEV https://github.com/uriel-fanelli/ollyster"
-			this.socket.Write([]byte(version))
-			log.Printf("[IRC] Sending back the -> %s", version)
-			continue
-		}
-
-		// :nick!user@ip-address PRIVMSG your-nick :Message
-		privMsgString := "(?i)^:.*!.*PRIVMSG.*" + this.nickname + " :.*$"
-		if matches, _ := regexp.MatchString(privMsgString, message); matches == true {
-
-			sinta := strings.Split(message, "!")
-			sender := strings.TrimLeft(sinta[0], ":")
-			// sender contains the sender nick
-
-			field := strings.Split(message, "PRIVMSG")
-			torn := strings.Split(field[1], ":")
-			msg := strings.Join(torn[1:], ":")
-			// msg contains the message after the 1st colon
-
-			files.MyStream.WriteMsgPriv(sender, msg)
-
-			log.Printf("[IRC] Private message from %s:  <%s>", sender, msg)
-			continue
-		}
-
-		// :nick!user@ip-address PRIVMSG #channel :Message
-		chanMsgString := "(?i)^:.*!.*PRIVMSG.*" + this.channel + " :.*$"
-		if matches, _ := regexp.MatchString(chanMsgString, message); matches == true {
-
-			sinta := strings.Split(message, "!")
-			sender := strings.TrimLeft(sinta[0], ":")
-			// sender contains the sender nick
-
-			field := strings.Split(message, "PRIVMSG")
-			torn := strings.Split(field[1], ":")
-			msg := strings.Join(torn[1:], ":")
-			// msg contains the message after the 1st colon
-
-			log.Printf("[IRC] %s sent a message to %s:  <%s>", sender, this.channel, msg)
-			files.MyStream.WriteMsgGroup(sender, this.channel, msg)
-			continue
-		}
+		// does all
+		this.IrcInterpreter(message)
 
 		// This must be the last one
 		if err == nil {
-			log.Printf("[IRC](exceed = %t)>  %s ", exceed, message)
+			log.Printf("[IRC]>  <%s> ", message)
 			continue
 		}
 
@@ -149,17 +95,21 @@ func (this *IrcServer) ircDial() {
 		log.Println("[AAA] Connected. Now waiting for courtesy")
 		time.Sleep(time.Duration(this.delay) * time.Millisecond)
 		log.Println("[AAA] Now sending the AAA")
-		this.socket.Write([]byte("CAP LS\n"))
+		this.IrcCmd("CAP LS")
 		time.Sleep(time.Duration(this.delay) * time.Millisecond)
-		this.socket.Write([]byte("NICK " + this.nickname + "\n"))
+		this.IrcCmd("NICK " + this.nickname)
 		time.Sleep(time.Duration(this.delay) * time.Millisecond)
-		userString := "USER " + this.nickname + " " + this.nickname + " " + this.servername + " :" + this.nickname + "\n"
+		userString := "USER " + this.nickname + " " + this.nickname + " " + this.servername + " :" + this.nickname
 		log.Print("[AAA] " + userString)
-		this.socket.Write([]byte(userString))
-		this.socket.Write([]byte("CAP END\n"))
+		this.IrcCmd(userString)
+		this.IrcCmd("CAP END")
+
 		time.Sleep(time.Duration(this.delay) * time.Millisecond)
 		log.Println("[AAA] AAA terminated, now joining")
-		this.IrcJoin()
+		this.IrcCmd("JOIN " + this.channel)
+		time.Sleep(time.Duration(this.delay) * time.Millisecond)
+		log.Println("[AAA] Asking for a list of channels")
+		this.IrcCmd("LIST >" + this.min_chanlist + ",<10000")
 
 	}
 
@@ -178,17 +128,15 @@ func (this *IrcServer) MakeAddr() *net.TCPAddr {
 
 }
 
-func (this *IrcServer) IrcJoin() {
+func (this *IrcServer) IrcCmd(command string) {
 
-	joinString := "JOIN " + this.channel + "\n"
-
-	log.Printf("[IRC] Joining  %s", this.channel)
-	_, err := this.socket.Write([]byte(joinString))
+	log.Printf("[IRC] Sending %s command", command)
+	_, err := this.socket.Write([]byte(command + "\n"))
 	if err != nil {
-		log.Printf("[IRC] Cannot join  %s: %s", this.channel, err)
+		log.Printf("[IRC] Cannot send <%s> :  %s:", command, err)
 
 	} else {
-		log.Printf("[IRC] Successfully joined %s", this.channel)
+		log.Printf("[IRC] Successfully sent <%s>", command)
 	}
 
 }

@@ -23,7 +23,7 @@
 	<div class="col-md-2">
   </div>
    <div class="col-md-8"> 
-<nav class="navbar navbar-inverse ">
+<nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -55,58 +55,36 @@
 <div class="row">
   <div class="col-md-2">
   </div>
-  <div class="col-md-6">   
+ 
 
-<div class="panel panel-default">
-  <!-- Default panel contents -->
-  <div class="panel-heading">Timeline</div>
-  <div class="panel-body">
-    <p> Here we see what happens in our network </p>
-  </div>
+ <div class="col-md-6">   
 
-  <!-- List group -->
-  <ul class="list-group">
-    <li class="list-group-item">Cras justo odio</li>
-    <li class="list-group-item">Dapibus ac facilisis in</li>
-    <li class="list-group-item">Morbi leo risus</li>
-    <li class="list-group-item">Porta ac consectetur ac</li>
-    <li class="list-group-item">Vestibulum at eros</li>
-  </ul>
+  
+<h2>Available groups</h2>
+  <p>Full list of channels available to join.</p>            
+  <table class="table table-striped " >
+
+	<thead>
+      <tr>
+        <th class="col-md-2">Group name</th>
+        <th class="col-md-4">Description</th>
+      </tr>
+    </thead>
+	
+	 <tbody>
+	
+	{{.Groups}}
+  
+     </tbody>
+  </table>
+
 </div>
 
 
 
-
-
-</div>
   <div class="col-md-2">
 	  
-	  <div class="panel panel-default">
-  <!-- Default panel contents -->
-  <div class="panel-heading">Profile
-  
-  <button type="button" class="btn btn-xs">Subscribe</button>
-  <button type="button" class="btn btn-xs">Edit</button>
-  
-  </div>
-  <div class="panel-body">
-    <p> Picture here</p><br>
-    <div class="btn-group" role="group" aria-label="...">
-  
-</div>
-  </div>
 
-  <!-- List group -->
-  <ul class="list-group">
-	  <li class="list-group-item"><a href="#">FOLLOWING <span class="badge">42</span></a></li>
-   <li class="list-group-item"><a href="#">FOLLOWERS <span class="badge">42</span></a></li>
-   <li class="list-group-item"></li>
-    <li class="list-group-item">email: whatever</li>
-    <li class="list-group-item">xmpp: whatever</li>
-    <li class="list-group-item">web: whatever</li>
-    
-   
-  </ul>
 </div>
 	  
 	  
