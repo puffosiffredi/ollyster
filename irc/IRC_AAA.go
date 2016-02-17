@@ -52,18 +52,19 @@ func (this *IrcServer) ircClient() {
 
 	for {
 
+		defer func() {
+			if e := recover(); e != nil {
+				this.socket.Close()
+				this.ircDial()
+			}
+		}()
+
 		var err error
 		var exceed bool
 
 		reader := bufio.NewReader(this.socket)
 
 		linea, exceed, err = reader.ReadLine()
-
-		if err != nil {
-			this.socket.Close()
-			this.ircDial()
-			continue
-		}
 
 		message := string(linea)
 
