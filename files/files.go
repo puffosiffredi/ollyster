@@ -41,6 +41,7 @@ func (this *ollysterSocial) RotateSocialFolder() {
 		orario := time.Now()
 
 		this.streamname = filepath.Join(this.streampath, "ollyster."+orario.Format(layout)+".html")
+		ioutil.WriteFile(this.streamname,[]byte("<!---Rotation Engine was here -->"), 0755 )
 		log.Println("[TXT] Streamfile is: " + this.streamname)
 		time.Sleep(10 * time.Minute)
 
@@ -51,11 +52,17 @@ func (this *ollysterSocial) RotateSocialFolder() {
 // writes down messages for the group
 func (this *ollysterSocial) WriteMsgGroup(ev string, gr string, ms string) {
 
-	eventString := MyOllysterMsg.AzureTmpl
 
+
+
+	eventString := MyOllysterMsg.AzureTmpl
+	
+	
 	eventString = strings.Replace(eventString, "{{.Author}}", ev, 1)
 	eventString = strings.Replace(eventString, "{{.Group}}", gr, 1)
 	eventString = strings.Replace(eventString, "{{.Message}}", ms, 1)
+	
+	log.Println("[TXT] Writing: " + eventString)
 
 	this.AddLineTopFile(eventString)
 
@@ -70,7 +77,7 @@ func (this *ollysterSocial) WriteMsgPriv(ev string, ms string) {
 	eventString = strings.Replace(eventString, "{{.Message}}", ms, 1)
 
 	this.AddLineTopFile(eventString)
-
+    log.Println("[TXT] Writing: " + eventString)
 }
 
 // RetrieveStringFromFile returns a file into a single string
