@@ -2,28 +2,31 @@
 	  
 	  <div class="panel panel-default">
   <!-- Default panel contents -->
-  <div class="panel-heading">{{.Name}}
-  
-  </div>
-  <div class="panel-body">
-    <p> <img src="/static/avatars/default.png" style="width:85%;">	
-	</p><br>
-   
-  </div>
+  <div class="panel-heading">{{.Name}} </div>
 
-  <!-- List group -->
-  <ul class="list-group">
-   <li class="list-group-item"><a href="#">FOLLOWING <span class="badge">{{.FriendsNum}}</span></a></li>
-   <li class="list-group-item"><a href="#">GROUPS<span class="badge">{{.GroupsNum}}</span></a></li>
-   <li class="list-group-item"></li>
+  <div class="panel-body">
+     <div class="well well-sm">
+          <p> <img src="/static/avatars/default.png" style="width:85%;"></p> 
+    </div>   
+
+
+  
+   <ul class="list-group">			
+		
+   			<li class="list-group-item"><p>FRIENDS:</p></li>
+		    <li class="list-group-item"><p> {{.FriendsList}}</p></li>
+  			<li class="list-group-item"><p>GROUPS:<span class="badge">{{.GroupsList}}</p></span> </li>
+		
+   	
+	<li class="list-group-item"></li>
     <li class="list-group-item">Email: <a href="mailto:{{.Email}}">{{.Email}}</a></li>
     <li class="list-group-item">Xmpp: {{.XMPP}}</li>
     <li class="list-group-item">Web: <a href="{{.Website}}">{{.Website}}</a></li>
     
    
   </ul>
-</div>
-	  
+	</div>
+</div>	  
 	  
 	  
  

@@ -63,7 +63,7 @@ func (this *IrcServer) IrcInterpreter(message string) {
 	chanMsgString = "(?i)^:.*[ ]+322[ ]+" + this.nickname + "[ ]+#.*$"
 	if matches, _ := regexp.MatchString(chanMsgString, message); matches == true {
 
-		re, _ := regexp.Compile("(?i)^:.*[ ]+322[ ]+.*[ ]+(#.*)[ ]+[0-9]+[ ]+:(.)$")
+		re, _ := regexp.Compile("(?i)^:.*[ ]+322[ ]+.*[ ]+(#.*)[ ]+[0-9]+[ ]+:(.*)$")
 		match := re.FindStringSubmatch(message)
 		list_line := "<tr><td class=\"col-md-2\"><b>" + match[1] + "</b></td><td class=\"col-md-4\">" + match[2] + "</td></tr>"
 
@@ -86,13 +86,29 @@ func (this *IrcServer) IrcInterpreter(message string) {
 	}
 
 	// :sinisalo.freenode.net 353 Ollyster = #social :gregoriosw_vp nullwarp asumu xmpp-gnu msava arctanx k0nsl cha_ron ascarpino jerrykan Sazius chimo dualbus n4mu cow_2001 atari-frosch molgrum alanz Stig_Atle BeS vinzv pztrn rec0de AlexanderS @ChanServ tonnerkiller kromonos nobody rolfrb
-
+	// LIST OF USERS
 	chanMsgString = "(?i)^:.*353[ ]+" + this.nickname + "[ ]+.[ ]+" + this.channel + "[ ]+:.*$"
 	if matches, _ := regexp.MatchString(chanMsgString, message); matches == true {
 		re, _ := regexp.Compile("(?i)^:.*353[ ]+(.*)[ ]+.[ ]+(.*)[ ]+:(.*)$")
 		match := re.FindStringSubmatch(message)
-
 		log.Printf("[IRC] List of channel for user %s , channel %s : %s", match[1], match[2], match[3])
+
+		names := strings.Split(match[3], " ")
+
+		for _, name := range names {
+			userLine := "<span class=\"badge\">" + name + "</span>"
+
+			if strings.Index(name, "+") == 0 {
+				userLine = "<span class=\"badge\">" + strings.TrimLeft(name, "+") + "</span>"
+			}
+
+			if strings.Index(name, "@") == 0 {
+				userLine = "<span class=\"badge\">" + strings.TrimLeft(name, "@") + "</span>"
+			}
+
+			files.MyStream.AddUniqueUser(userLine)
+
+		}
 
 		return
 

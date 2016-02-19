@@ -42,6 +42,8 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	profile = strings.Replace(profile, "{{.Email}}", co.OProfile["email"], 2)
 	profile = strings.Replace(profile, "{{.XMPP}}", co.OProfile["xmpp"], 1)
 	profile = strings.Replace(profile, "{{.Website}}", co.OProfile["website"], 2)
+	profile = strings.Replace(profile, "{{.FriendsList}}", fi.MyStream.NamesBuf, 1)
+	profile = strings.Replace(profile, "{{.GroupsList}}", co.OConfig["channel"], 1)
 
 	pageString := strings.Replace(OTemplates.indextmpl, "{{.Contents}}", contents, 1)
 	pageString = strings.Replace(pageString, "{{.Profile}}", profile, 1)

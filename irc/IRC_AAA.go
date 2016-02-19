@@ -55,6 +55,7 @@ func (this *IrcServer) ircClient() {
 		defer func() {
 			if e := recover(); e != nil {
 				log.Println("[IRC] Network issue, re-dial after 10 sec.")
+				this.socket.Close()
 				time.Sleep(time.Duration(10000 * time.Millisecond))
 				this.ircDial()
 				this.reader = bufio.NewScanner(this.socket)

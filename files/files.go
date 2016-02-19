@@ -22,6 +22,7 @@ type ollysterSocial struct {
 
 	channelname string
 	Channelbuf  string
+	NamesBuf    string
 }
 
 var MyStream ollysterSocial
@@ -192,6 +193,14 @@ func (this *ollysterSocial) InitializeChanList() {
 func (this *ollysterSocial) AddUniqueChannel(channelline string) error {
 
 	this.Channelbuf += "\n" + channelline
+
+	return nil
+
+}
+
+func (this *ollysterSocial) AddUniqueUser(userline string) error {
+
+	this.NamesBuf += "\n" + userline
 
 	return nil
 
