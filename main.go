@@ -31,4 +31,5 @@ func main() {
 	mux.HandleFunc("/", web.Home)
 
 	log.Fatal(http.ListenAndServe(":"+conf.OConfig["webport"], mux))
+
 }

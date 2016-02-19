@@ -5,7 +5,6 @@ import (
 	"log"
 	"net"
 	"ollyster/conf"
-	"ollyster/files"
 	"strconv"
 	"time"
 )
@@ -25,9 +24,9 @@ type IrcServer struct {
 	min_chanlist string // minimal amount of users for a channel to be listed
 }
 
-func init() {
+var MyServer IrcServer
 
-	var MyServer IrcServer
+func init() {
 
 	// taken by the conf file
 	MyServer.servername = conf.OConfig["servername"]
@@ -54,6 +53,8 @@ func (this *IrcServer) ircClient() {
 
 		defer func() {
 			if e := recover(); e != nil {
+				log.Println("[IRC] Network issue, re-dial after 10 sec.")
+				time.Sleep(time.Duration(10000 * time.Millisecond))
 				this.ircDial()
 			}
 		}()
@@ -61,10 +62,8 @@ func (this *IrcServer) ircClient() {
 		message = reader.Text()
 
 		err := reader.Err()
-
 		if err != nil {
 			log.Println("[IRC] Error reading socket: %s ", err)
-			this.ircDial()
 		}
 
 		// does all
@@ -110,9 +109,6 @@ func (this *IrcServer) ircDial() {
 		this.IrcCmd("JOIN " + this.channel)
 
 		time.Sleep(time.Duration(this.delay) * time.Millisecond)
-		files.MyStream.InitializeChanList()
-		log.Println("[AAA] Asking for a list of channels")
-		this.IrcCmd("LIST >" + this.min_chanlist + ",<10000")
 
 	}
 

@@ -39,7 +39,7 @@ func serializeProfile(line string) {
 	if len(split) != 0 {
 
 		OProfile[split[0]] = split[1]
-		log.Printf("[ETC] Config: %q -> %q\r\n", split[0], split[1])
+		log.Printf("[ETC] Profile: %q -> %q\r\n", split[0], split[1])
 
 	}
 

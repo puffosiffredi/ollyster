@@ -11,9 +11,10 @@ func (this *IrcServer) IrcInterpreter(message string) {
 
 	if matches, _ := regexp.MatchString("(?i)^PING :.*$", message); matches == true {
 		log.Printf("[IRC] %s ", message)
-		sinta := strings.Split(message, ":")
-		this.socket.Write([]byte("PONG :" + sinta[1]))
-		log.Printf("[IRC] Sending back the -> %s", "PONG :"+sinta[1])
+		response := strings.Replace(message, "PING", "PONG", 1)
+		log.Printf("[IRC] Sending back the -> %s", response)
+		this.IrcCmd(response)
+
 		return
 	}
 
