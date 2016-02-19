@@ -18,17 +18,8 @@ func (this *IrcServer) IrcInterpreter(message string) {
 		return
 	}
 
-	// :nick!user@ip-address PRIVMSG your-nick :VERSION
-	if matches, _ := regexp.MatchString("(?i)^:.*PRIVMSG.*VERSION$", message); matches == true {
-		sinta := strings.Split(message, "!")
-		log.Printf("[IRC] VERSION REQUEST from %s ", sinta[0])
-		version := "NOTICE " + strings.TrimLeft(sinta[0], ":") + " : VERSION Ollyster DEV https://github.com/uriel-fanelli/ollyster"
-		this.socket.Write([]byte(version))
-		log.Printf("[IRC] Sending back the -> %s", version)
-		return
-	}
-
 	// :nick!user@ip-address PRIVMSG your-nick :Message
+	// PRIVATE MESSAGE
 	privMsgString := "(?i)^:.*!.*PRIVMSG.*" + this.nickname + " :.*$"
 	if matches, _ := regexp.MatchString(privMsgString, message); matches == true {
 
@@ -48,6 +39,7 @@ func (this *IrcServer) IrcInterpreter(message string) {
 	}
 
 	// :nick!user@ip-address PRIVMSG #channel :Message
+	// MENTION
 	chanMsgString := "(?i)^:.*!.*PRIVMSG.*" + this.channel + " :.*" + this.nickname + ".*$"
 	if matches, _ := regexp.MatchString(chanMsgString, message); matches == true {
 
@@ -66,6 +58,7 @@ func (this *IrcServer) IrcInterpreter(message string) {
 	}
 
 	// :nick!user@ip-address PRIVMSG #channel :Message
+	// MESSAGE ONLY
 	chanMsgString = "(?i)^:.*!.*PRIVMSG.*" + this.channel + " :.*$"
 	if matches, _ := regexp.MatchString(chanMsgString, message); matches == true {
 
@@ -84,6 +77,7 @@ func (this *IrcServer) IrcInterpreter(message string) {
 	}
 
 	// :sinisalo.freenode.net 322 Ollyster #pld-git 3 :https://www.pld-linux.org/pld-git
+	// CHANNEL LIST ITEM
 	chanMsgString = "(?i)^:.*322 " + this.nickname + " #.*$"
 	if matches, _ := regexp.MatchString(chanMsgString, message); matches == true {
 
@@ -98,6 +92,27 @@ func (this *IrcServer) IrcInterpreter(message string) {
 		return
 	}
 
+	// :Loweel!~loweel@p2003004C6815B300D25099FFFE17D56C.dip0.t-ipconnect.de NOTICE Ollyster :Notizione ma di quelli con le palle
+	// NOTICE
+	chanMsgString = "(?i)^:.*!.*NOTICE.*" + this.nickname + " :.*$"
+	if matches, _ := regexp.MatchString(chanMsgString, message); matches == true {
+
+		sinta := strings.Split(message, "!")
+		sender := strings.TrimLeft(sinta[0], ":")
+		// sender contains the sender nick
+
+		field := strings.Split(message, "NOTICE")
+		torn := strings.Split(field[1], ":")
+		msg := strings.Join(torn[1:], ":")
+		// msg contains the message after the 1st colon
+
+		log.Printf("[IRC] %s sent a NOTICE :  <%s>", sender, msg)
+		files.MyStream.WriteNotice(sender, msg)
+		return
+	}
+
+	// :sinisalo.freenode.net 353 Ollyster = #social :gregoriosw_vp nullwarp asumu xmpp-gnu msava arctanx k0nsl cha_ron ascarpino jerrykan Sazius chimo dualbus n4mu cow_2001 atari-frosch molgrum alanz Stig_Atle BeS vinzv pztrn rec0de AlexanderS @ChanServ tonnerkiller kromonos nobody rolfrb
+
 	// :sinisalo.freenode.net 323 Ollyster :End of /LIST
 	chanMsgString = "(?i)^:.*323 " + this.nickname + " :End.*LIST$"
 	if matches, _ := regexp.MatchString(chanMsgString, message); matches == true {
@@ -107,5 +122,7 @@ func (this *IrcServer) IrcInterpreter(message string) {
 		log.Printf("[IRC] Channel list registered")
 		return
 	}
+
+	log.Printf("[IRC]->  <%s> ", message)
 
 }

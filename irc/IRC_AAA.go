@@ -69,12 +69,6 @@ func (this *IrcServer) ircClient() {
 		// does all
 		this.IrcInterpreter(message)
 
-		// This must be the last one
-		if err == nil {
-			log.Printf("[IRC]>  <%s> ", message)
-			continue
-		}
-
 	}
 
 }

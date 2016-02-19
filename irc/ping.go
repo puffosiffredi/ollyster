@@ -34,7 +34,7 @@ func (this *IrcServer) KeepAliveThread() {
 		}()
 
 		time.Sleep(2 * time.Minute)
-		log.Printf("[IRC] sending PING :%s" this.servername)
+		log.Printf("[IRC] sending PING :%s", this.servername)
 
 		_, err := this.socket.Write([]byte("PING :" + this.servername + "\n"))
 		if err != nil {
@@ -52,7 +52,7 @@ func (this *IrcServer) KeepAliveThread() {
 func (this *IrcServer) ChannelThread() {
 
 	log.Println("[IRC] Initializing the Channel thread")
-
+    time.Sleep(2 * time.Minute)
 	for {
 		// make it robust
 
@@ -63,10 +63,11 @@ func (this *IrcServer) ChannelThread() {
 			}
 		}()
 
-		time.Sleep(5 * time.Minute)
+		
 		files.MyStream.InitializeChanList()
 		log.Println("[IRC] Asking for a list of channels")
 		this.IrcCmd("LIST >" + this.min_chanlist + ",<10000")
+		time.Sleep(60 * time.Minute)
 	
 	}
 }

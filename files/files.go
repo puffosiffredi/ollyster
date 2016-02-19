@@ -85,12 +85,15 @@ func (this *ollysterSocial) FlushChanList() {
 
 // writes down messages for the group
 func (this *ollysterSocial) WriteMsgGroup(ev string, gr string, ms string) {
+	const layout = "Jan 02 15:04"
+	orario := time.Now()
 
 	eventString := MyOllysterMsg.AzureTmpl
 
-	eventString = strings.Replace(eventString, "{{.Author}}", ev, 1)
-	eventString = strings.Replace(eventString, "{{.Group}}", gr, 1)
-	eventString = strings.Replace(eventString, "{{.Message}}", ms, 1)
+	eventString = strings.Replace(eventString, "{{.Author}}", ev, -1)
+	eventString = strings.Replace(eventString, "{{.Group}}", gr, -1)
+	eventString = strings.Replace(eventString, "{{.Message}}", ms, -1)
+	eventString = strings.Replace(eventString, "{{.Time}}", orario.Format(layout), -1)
 
 	this.AddLineTopFile(eventString)
 
@@ -99,11 +102,15 @@ func (this *ollysterSocial) WriteMsgGroup(ev string, gr string, ms string) {
 // writes down messages for the group
 func (this *ollysterSocial) WriteMsgMention(ev string, gr string, ms string) {
 
+	const layout = "Jan 02 15:04"
+	orario := time.Now()
+
 	eventString := MyOllysterMsg.RedTmpl
 
-	eventString = strings.Replace(eventString, "{{.Author}}", ev, 1)
-	eventString = strings.Replace(eventString, "{{.Group}}", gr, 1)
-	eventString = strings.Replace(eventString, "{{.Message}}", ms, 1)
+	eventString = strings.Replace(eventString, "{{.Author}}", ev, -1)
+	eventString = strings.Replace(eventString, "{{.Group}}", gr, -1)
+	eventString = strings.Replace(eventString, "{{.Message}}", ms, -1)
+	eventString = strings.Replace(eventString, "{{.Time}}", orario.Format(layout), -1)
 
 	this.AddLineTopFile(eventString)
 
@@ -112,16 +119,33 @@ func (this *ollysterSocial) WriteMsgMention(ev string, gr string, ms string) {
 // writes down messages for the group
 func (this *ollysterSocial) WriteMsgPriv(ev string, ms string) {
 
+	const layout = "Jan 02 15:04"
+	orario := time.Now()
+
 	eventString := MyOllysterMsg.GreenTmpl
 
-	eventString = strings.Replace(eventString, "{{.Author}}", ev, 1)
-	eventString = strings.Replace(eventString, "{{.Message}}", ms, 1)
+	eventString = strings.Replace(eventString, "{{.Author}}", ev, -1)
+	eventString = strings.Replace(eventString, "{{.Message}}", ms, -1)
+	eventString = strings.Replace(eventString, "{{.Time}}", orario.Format(layout), -1)
 
 	this.AddLineTopFile(eventString)
 
 }
 
+func (this *ollysterSocial) WriteNotice(sender string, msg string) {
 
+	const layout = "Jan 02 15:04"
+	orario := time.Now()
+
+	eventString := MyOllysterMsg.YellowTmpl
+
+	eventString = strings.Replace(eventString, "{{.Author}}", sender, -1)
+	eventString = strings.Replace(eventString, "{{.Message}}", msg, -1)
+	eventString = strings.Replace(eventString, "{{.Time}}", orario.Format(layout), -1)
+
+	this.AddLineTopFile(eventString)
+
+}
 
 // RetrieveStringFromFile returns a file into a single string
 // useful to retrieve the content and shoot into the home page
@@ -155,17 +179,15 @@ func (this *ollysterSocial) AddLineTopFile(line string) error {
 
 }
 
-// AddUniqueChannel adds a channel to the channel buffer 
+// AddUniqueChannel adds a channel to the channel buffer
 
-func (this *ollysterSocial) InitializeChanList(){
+func (this *ollysterSocial) InitializeChanList() {
 
 	this.Channelbuf = "<!----Here we initialized it---->"
 
-
 }
 
-
-// AddUniqueChannel adds a channel to the channel buffer 
+// AddUniqueChannel adds a channel to the channel buffer
 
 func (this *ollysterSocial) AddUniqueChannel(channelline string) error {
 
