@@ -23,18 +23,12 @@ func (this *IrcServer) IrcInterpreter(message string) {
 	privMsgString := "(?i)^:.*!.*PRIVMSG.*" + this.nickname + " :.*$"
 	if matches, _ := regexp.MatchString(privMsgString, message); matches == true {
 
-		sinta := strings.Split(message, "!")
-		sender := strings.TrimLeft(sinta[0], ":")
-		// sender contains the sender nick
+		re, _ := regexp.Compile("(?i)^:(.*)!.*[ ]+PRIVMSG[ ]+.*[ ]+:(.*)$")
+		match := re.FindStringSubmatch(message)
 
-		field := strings.Split(message, "PRIVMSG")
-		torn := strings.Split(field[1], ":")
-		msg := strings.Join(torn[1:], ":")
-		// msg contains the message after the 1st colon
+		files.MyStream.WriteMsgPriv(match[1], match[2])
 
-		files.MyStream.WriteMsgPriv(sender, msg)
-
-		log.Printf("[IRC] Private message from %s:  <%s>", sender, msg)
+		log.Printf("[IRC] Private message from %s:  <%s>", match[1], match[2])
 		return
 	}
 
@@ -43,75 +37,66 @@ func (this *IrcServer) IrcInterpreter(message string) {
 	chanMsgString := "(?i)^:.*!.*PRIVMSG.*" + this.channel + " :.*" + this.nickname + ".*$"
 	if matches, _ := regexp.MatchString(chanMsgString, message); matches == true {
 
-		sinta := strings.Split(message, "!")
-		sender := strings.TrimLeft(sinta[0], ":")
-		// sender contains the sender nick
+		re, _ := regexp.Compile("(?i)^:(.*)!.*[ ]+PRIVMSG[ ]+(#.*)[ ]+:(.*)$")
+		match := re.FindStringSubmatch(message)
 
-		field := strings.Split(message, "PRIVMSG")
-		torn := strings.Split(field[1], ":")
-		msg := strings.Join(torn[1:], ":")
-		// msg contains the message after the 1st colon
-
-		log.Printf("[IRC] %s sent a message to %s:  <%s>", sender, this.channel, msg)
-		files.MyStream.WriteMsgMention(sender, this.channel, msg)
+		log.Printf("[IRC] %s Mentioned you in %s:  <%s>", match[1], match[2], match[3])
+		files.MyStream.WriteMsgMention(match[1], match[2], match[3])
 		return
 	}
 
 	// :nick!user@ip-address PRIVMSG #channel :Message
 	// MESSAGE ONLY
-	chanMsgString = "(?i)^:.*!.*PRIVMSG.*" + this.channel + " :.*$"
+	chanMsgString = "(?i)^:.*!.*[ ]+PRIVMSG[ ]+" + this.channel + "[ ]+:.*$"
 	if matches, _ := regexp.MatchString(chanMsgString, message); matches == true {
 
-		sinta := strings.Split(message, "!")
-		sender := strings.TrimLeft(sinta[0], ":")
-		// sender contains the sender nick
+		re, _ := regexp.Compile("(?i)^:(.*)!.*[ ]+PRIVMSG[ ]+(#.*)[ ]+:(.*)$")
+		match := re.FindStringSubmatch(message)
 
-		field := strings.Split(message, "PRIVMSG")
-		torn := strings.Split(field[1], ":")
-		msg := strings.Join(torn[1:], ":")
-		// msg contains the message after the 1st colon
-
-		log.Printf("[IRC] %s sent a message to %s:  <%s>", sender, this.channel, msg)
-		files.MyStream.WriteMsgGroup(sender, this.channel, msg)
+		log.Printf("[IRC] %s sent a message to %s:  <%s>", match[1], match[2], match[3])
+		files.MyStream.WriteMsgGroup(match[1], match[2], match[3])
 		return
 	}
 
 	// :sinisalo.freenode.net 322 Ollyster #pld-git 3 :https://www.pld-linux.org/pld-git
 	// CHANNEL LIST ITEM
-	chanMsgString = "(?i)^:.*322 " + this.nickname + " #.*$"
+	chanMsgString = "(?i)^:.*[ ]+322[ ]+" + this.nickname + "[ ]+#.*$"
 	if matches, _ := regexp.MatchString(chanMsgString, message); matches == true {
 
-		field := strings.Split(message, " 322 "+this.nickname+" ") // field[0] is useless , field[1] contains the payload
-		list := strings.Split(field[1], " ")                       // now list[0] contains the channel name, list[1] the number of members, list[2:] everything else
-		desc := strings.TrimLeft(strings.Join(list[2:], " "), ":") // this is "everything else, rebuilt with spaces and then removed the ":"
+		re, _ := regexp.Compile("(?i)^:.*[ ]+322[ ]+.*[ ]+(#.*)[ ]+[0-9]+[ ]+:(.)$")
+		match := re.FindStringSubmatch(message)
+		list_line := "<tr><td class=\"col-md-2\"><b>" + match[1] + "</b></td><td class=\"col-md-4\">" + match[2] + "</td></tr>"
 
-		list_line := "<tr><td class=\"col-md-2\"><b>" + list[0] + "</b></td><td class=\"col-md-4\">" + desc + "</td></tr>"
-
-		log.Printf("[IRC] Registering channel :  <%s>", list[0])
+		log.Printf("[IRC] Registering channel :  <%s>", match[1])
 		files.MyStream.AddUniqueChannel(list_line)
 		return
 	}
 
 	// :Loweel!~loweel@p2003004C6815B300D25099FFFE17D56C.dip0.t-ipconnect.de NOTICE Ollyster :Notizione ma di quelli con le palle
 	// NOTICE
-	chanMsgString = "(?i)^:.*!.*NOTICE.*" + this.nickname + " :.*$"
+	chanMsgString = "(?i)^:.*!.*NOTICE[ ]+" + this.nickname + "[ ]+:.*$"
 	if matches, _ := regexp.MatchString(chanMsgString, message); matches == true {
 
-		sinta := strings.Split(message, "!")
-		sender := strings.TrimLeft(sinta[0], ":")
-		// sender contains the sender nick
+		re, _ := regexp.Compile("(?i)^:(.*)!.*NOTICE[ ]+.*[ ]+:(.*)$")
+		match := re.FindStringSubmatch(message)
 
-		field := strings.Split(message, "NOTICE")
-		torn := strings.Split(field[1], ":")
-		msg := strings.Join(torn[1:], ":")
-		// msg contains the message after the 1st colon
-
-		log.Printf("[IRC] %s sent a NOTICE :  <%s>", sender, msg)
-		files.MyStream.WriteNotice(sender, msg)
+		log.Printf("[IRC] %s sent a NOTICE :  <%s>", match[1], match[2])
+		files.MyStream.WriteNotice(match[1], match[2])
 		return
 	}
 
 	// :sinisalo.freenode.net 353 Ollyster = #social :gregoriosw_vp nullwarp asumu xmpp-gnu msava arctanx k0nsl cha_ron ascarpino jerrykan Sazius chimo dualbus n4mu cow_2001 atari-frosch molgrum alanz Stig_Atle BeS vinzv pztrn rec0de AlexanderS @ChanServ tonnerkiller kromonos nobody rolfrb
+
+	chanMsgString = "(?i)^:.*353[ ]+" + this.nickname + "[ ]+.[ ]+" + this.channel + "[ ]+:.*$"
+	if matches, _ := regexp.MatchString(chanMsgString, message); matches == true {
+		re, _ := regexp.Compile("(?i)^:.*353[ ]+(.*)[ ]+.[ ]+(.*)[ ]+:(.*)$")
+		match := re.FindStringSubmatch(message)
+
+		log.Printf("[IRC] List of channel for user %s , channel %s : %s", match[1], match[2], match[3])
+
+		return
+
+	}
 
 	// :sinisalo.freenode.net 323 Ollyster :End of /LIST
 	chanMsgString = "(?i)^:.*323 " + this.nickname + " :End.*LIST$"

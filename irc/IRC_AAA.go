@@ -22,6 +22,7 @@ type IrcServer struct {
 	heartbeat    int    // keepalive in seconds
 	channel      string // the channel to join
 	min_chanlist string // minimal amount of users for a channel to be listed
+	reader       *bufio.Scanner
 }
 
 var MyServer IrcServer
@@ -46,22 +47,23 @@ func init() {
 func (this *IrcServer) ircClient() {
 
 	this.ircDial()
-	reader := bufio.NewScanner(this.socket)
+	this.reader = bufio.NewScanner(this.socket)
 	var message string = "NOOP" // always better to initialize I/O strings
 
-	for reader.Scan() {
+	for this.reader.Scan() {
 
 		defer func() {
 			if e := recover(); e != nil {
 				log.Println("[IRC] Network issue, re-dial after 10 sec.")
 				time.Sleep(time.Duration(10000 * time.Millisecond))
 				this.ircDial()
+				this.reader = bufio.NewScanner(this.socket)
 			}
 		}()
 
-		message = reader.Text()
+		message = this.reader.Text()
 
-		err := reader.Err()
+		err := this.reader.Err()
 		if err != nil {
 			log.Println("[IRC] Error reading socket: %s ", err)
 		}
