@@ -16,7 +16,8 @@ type ollysterSocial struct {
 
 	streamname string
 	streampath string
-	streamfile *os.File
+
+	privtname string
 
 	//  file needed for the channel list
 
@@ -50,10 +51,12 @@ func (this *ollysterSocial) RotateSocialFolder() {
 		orario := time.Now()
 
 		this.streamname = filepath.Join(this.streampath, "ollyster."+orario.Format(layout)+".html")
+		this.privtname = filepath.Join(this.streampath, "inbox."+orario.Format(layout)+".html")
 		this.channelname = filepath.Join(this.streampath, "channels.txt")
 
 		log.Println("[TXT] Streamfile is now: " + this.streamname)
 		log.Println("[TXT] Channelfile is now: " + this.channelname)
+		log.Println("[TXT] Privtfile is now: " + this.privtname)
 
 		// initializes the streamname if it doesn't exists
 
@@ -63,9 +66,19 @@ func (this *ollysterSocial) RotateSocialFolder() {
 
 		}
 
+		// initializes channelname if it doesn't exists
+
 		_, err = os.Stat(this.channelname)
 		if err != nil {
 			ioutil.WriteFile(this.channelname, []byte("<!---Rotation Engine was here -->"), 0755)
+
+		}
+
+		// initializes privtname if it doesn't exists
+
+		_, err = os.Stat(this.privtname)
+		if err != nil {
+			ioutil.WriteFile(this.privtname, []byte("<!---Rotation Engine was here -->"), 0755)
 
 		}
 
@@ -129,7 +142,9 @@ func (this *ollysterSocial) WriteMsgPriv(ev string, ms string) {
 	eventString = strings.Replace(eventString, "{{.Message}}", ms, -1)
 	eventString = strings.Replace(eventString, "{{.Time}}", orario.Format(layout), -1)
 
-	this.AddLineTopFile(eventString)
+	// let's keep it private
+
+	this.AddPrivTopFile(eventString)
 
 }
 
@@ -144,15 +159,28 @@ func (this *ollysterSocial) WriteNotice(sender string, msg string) {
 	eventString = strings.Replace(eventString, "{{.Message}}", msg, -1)
 	eventString = strings.Replace(eventString, "{{.Time}}", orario.Format(layout), -1)
 
-	this.AddLineTopFile(eventString)
+	// let's keep it private
+
+	this.AddPrivTopFile(eventString)
 
 }
 
 // RetrieveStringFromFile returns a file into a single string
 // useful to retrieve the content and shoot into the home page
-func (this *ollysterSocial) RetrieveStreamString() string {
+func (this *ollysterSocial) RetrieveStreamString(sname string) string {
 
-	content, err := ioutil.ReadFile(this.streamname)
+	var myfile string
+
+	if sname == "private" {
+
+		myfile = this.privtname
+
+	} else {
+
+		myfile = this.streamname
+	}
+
+	content, err := ioutil.ReadFile(myfile)
 	if err != nil {
 		return "<!-- EMPTY FILE -->"
 	}
@@ -172,6 +200,26 @@ func (this *ollysterSocial) AddLineTopFile(line string) error {
 	contentString := line + "\n" + string(content)
 
 	err = ioutil.WriteFile(this.streamname, []byte(contentString), 0755)
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+// Add PrivtTopFile
+// AddLineTopFile : appends one line to the privt file, in reversed order, last one top
+func (this *ollysterSocial) AddPrivTopFile(line string) error {
+
+	content, err := ioutil.ReadFile(this.privtname)
+	if err != nil {
+		return err
+	}
+
+	contentString := line + "\n" + string(content)
+
+	err = ioutil.WriteFile(this.privtname, []byte(contentString), 0755)
 	if err != nil {
 		return err
 	}

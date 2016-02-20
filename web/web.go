@@ -35,7 +35,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	log.Println("[WEB] Home Serving: ", r.URL.Path)
 	// http.ServeFile(w, r, HttpRoot+r.URL.Path)
 
-	contents := fi.MyStream.RetrieveStreamString()
+	contents := fi.MyStream.RetrieveStreamString("public")
 	profile := OTemplates.profifmpl
 
 	profile = strings.Replace(profile, "{{.Name}}", co.OProfile["name"], 1)
@@ -57,5 +57,17 @@ func ServeNetwork(w http.ResponseWriter, r *http.Request) {
 	sections := strings.Split(OTemplates.grouptmpl, "{{.Groups}}")
 
 	io.WriteString(w, sections[0]+fi.MyStream.Channelbuf+sections[1])
+
+}
+
+// {{.Privates}}
+
+func ServeInbox(w http.ResponseWriter, r *http.Request) {
+
+	Gandalf(w, r)
+
+	sections := strings.Split(OTemplates.inboxtmpl, "{{.Privates}}")
+
+	io.WriteString(w, sections[0]+fi.MyStream.RetrieveStreamString("private")+sections[1])
 
 }

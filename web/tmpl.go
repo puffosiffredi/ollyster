@@ -12,6 +12,7 @@ type ollysterTmpl struct {
 	indextmpl string
 	grouptmpl string
 	profifmpl string
+	inboxtmpl string
 }
 
 var OTemplates ollysterTmpl
@@ -21,10 +22,12 @@ func init() {
 	indextmplFile := fp.Join(to.Hpwd(), "static", "tmpl", "index.tmpl")
 	grouptmplFile := fp.Join(to.Hpwd(), "static", "tmpl", "group.tmpl")
 	profitmplFile := fp.Join(to.Hpwd(), "static", "tmpl", "profile.tmpl")
+	inboxtmplFile := fp.Join(to.Hpwd(), "static", "tmpl", "inbox.tmpl")
 
 	OTemplates.indextmpl = RetrieveTmplString(indextmplFile)
 	OTemplates.grouptmpl = RetrieveTmplString(grouptmplFile)
 	OTemplates.profifmpl = RetrieveTmplString(profitmplFile)
+	OTemplates.inboxtmpl = RetrieveTmplString(inboxtmplFile)
 
 }
 

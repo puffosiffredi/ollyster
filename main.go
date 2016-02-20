@@ -28,6 +28,7 @@ func main() {
 
 	mux.HandleFunc("/static/", web.ServeStatic)
 	mux.HandleFunc("/network/", web.ServeNetwork)
+	mux.HandleFunc("/inbox/", web.ServeInbox)
 	mux.HandleFunc("/", web.Home)
 
 	log.Fatal(http.ListenAndServe(":"+conf.OConfig["webport"], mux))
