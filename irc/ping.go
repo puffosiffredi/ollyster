@@ -4,6 +4,7 @@ import (
 	"log"
 	"time"
 	"ollyster/files"
+	"bufio"
 )
 
 
@@ -30,21 +31,19 @@ func (this *IrcServer) KeepAliveThread() {
 			if e := recover(); e != nil {
 				log.Println("[TCP] Network issue, RECOVER in act")
 				this.socket = nil
+				this.socket.Close()
+				time.Sleep(30 * time.Second)
+				log.Println("[TCP] Trying to reconnect.")
+				this.ircDial()
+				this.reader = bufio.NewScanner(this.socket)
 			}
 		}()
 
 		time.Sleep(2 * time.Minute)
 		log.Printf("[IRC] sending PING :%s", this.servername)
 
-		_, err := this.socket.Write([]byte("PING :" + this.servername + "\n"))
-		if err != nil {
-			this.socket.Close()
-			log.Println("[TCP] Connection down.")
-			
-			time.Sleep(30 * time.Second)
-			log.Println("[TCP] Restarting connection")
-			this.ircDial()
-		}
+		 this.socket.Write([]byte("PING :" + this.servername + "\n"))
+		
 
 	}
 }

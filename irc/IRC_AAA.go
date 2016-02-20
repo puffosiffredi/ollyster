@@ -32,7 +32,7 @@ func init() {
 	// taken by the conf file
 	MyServer.servername = conf.OConfig["servername"]
 	MyServer.serverport = conf.OConfig["serverport"]
-	MyServer.serveraddr = conf.OConfig["serveraddr"]
+	MyServer.serveraddr = MyServer.Resolve(MyServer.servername)
 	MyServer.nickname = conf.OConfig["nickname"]
 	MyServer.protocol = conf.OConfig["protocol"]
 	MyServer.delay, _ = strconv.Atoi(conf.OConfig["delay"])
@@ -80,7 +80,14 @@ func (this *IrcServer) ircDial() {
 
 	var err error
 
-	this.socket, err = net.DialTCP("tcp4", nil, this.MakeAddr())
+	defer func() {
+		if e := recover(); e != nil {
+			log.Println("[TCP] Network issue, RECOVER in act")
+			this.socket = nil
+		}
+	}()
+
+	this.socket, err = net.DialTCP(this.protocol, nil, this.MakeAddr())
 
 	if err != nil {
 		log.Printf("[AAA] CONNECTION ERROR: %s", err)
@@ -108,19 +115,6 @@ func (this *IrcServer) ircDial() {
 		time.Sleep(time.Duration(this.delay) * time.Millisecond)
 
 	}
-
-}
-
-func (this *IrcServer) MakeAddr() *net.TCPAddr {
-
-	tcpAddr, err := net.ResolveTCPAddr("tcp", this.serveraddr+":"+this.serverport)
-	if err != nil {
-
-		log.Printf("[TCP] Error in creating TCP Address %s", err)
-		return nil
-	}
-
-	return tcpAddr
 
 }
 
