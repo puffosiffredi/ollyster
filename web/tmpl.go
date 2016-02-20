@@ -5,6 +5,7 @@ import (
 	"log"
 	to "ollyster/tools"
 	fp "path/filepath"
+	"strings"
 )
 
 type ollysterTmpl struct {
@@ -38,6 +39,15 @@ func RetrieveTmplString(file string) string {
 
 	log.Println("[WEB] Template " + file + " loaded")
 	return string(content)
+
+}
+
+func MakeChannels(channels string) (badges string) {
+
+	sepa := "</span><span class=\"badge\">"
+	chans := "<span class=\"badge\">" + strings.Replace(channels, ",", sepa, -1) + "</span>"
+
+	return chans
 
 }
 
