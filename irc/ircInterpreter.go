@@ -34,7 +34,7 @@ func (this *IrcServer) IrcInterpreter(message string) {
 
 	// :nick!user@ip-address PRIVMSG #channel :Message
 	// MENTION
-	chanMsgString := "(?i)^:.*!.*PRIVMSG.*" + this.channel + " :.*" + this.nickname + ".*$"
+	chanMsgString := "(?i)^:.*!.*PRIVMSG[ ]+ #.*[ ]+:.*" + this.nickname + ".*$"
 	if matches, _ := regexp.MatchString(chanMsgString, message); matches == true {
 
 		re, _ := regexp.Compile("(?i)^:(.*)!.*[ ]+PRIVMSG[ ]+(#.*)[ ]+:(.*)$")
@@ -47,7 +47,7 @@ func (this *IrcServer) IrcInterpreter(message string) {
 
 	// :nick!user@ip-address PRIVMSG #channel :Message
 	// MESSAGE ONLY
-	chanMsgString = "(?i)^:.*!.*[ ]+PRIVMSG[ ]+" + this.channel + "[ ]+:.*$"
+	chanMsgString = "(?i)^:.*!.*[ ]+PRIVMSG[ ]+#.*[ ]+:.*$"
 	if matches, _ := regexp.MatchString(chanMsgString, message); matches == true {
 
 		re, _ := regexp.Compile("(?i)^:(.*)!.*[ ]+PRIVMSG[ ]+(#.*)[ ]+:(.*)$")
@@ -87,9 +87,9 @@ func (this *IrcServer) IrcInterpreter(message string) {
 
 	// :sinisalo.freenode.net 353 Ollyster = #social :gregoriosw_vp nullwarp asumu xmpp-gnu msava arctanx k0nsl cha_ron ascarpino jerrykan Sazius chimo dualbus n4mu cow_2001 atari-frosch molgrum alanz Stig_Atle BeS vinzv pztrn rec0de AlexanderS @ChanServ tonnerkiller kromonos nobody rolfrb
 	// LIST OF USERS
-	chanMsgString = "(?i)^:.*353[ ]+" + this.nickname + "[ ]+.[ ]+" + this.channel + "[ ]+:.*$"
+	chanMsgString = "(?i)^:.*353[ ]+" + this.nickname + "[ ]+.[ ]+#.*[ ]+:.*$"
 	if matches, _ := regexp.MatchString(chanMsgString, message); matches == true {
-		re, _ := regexp.Compile("(?i)^:.*353[ ]+(.*)[ ]+.[ ]+(.*)[ ]+:(.*)$")
+		re, _ := regexp.Compile("(?i)^:.*353[ ]+(.*)[ ]+.[ ]+(#.*)[ ]+:(.*)$")
 		match := re.FindStringSubmatch(message)
 		log.Printf("[IRC] List of channel for user %s , channel %s : %s", match[1], match[2], match[3])
 

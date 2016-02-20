@@ -34,7 +34,6 @@ func init() {
 	MyServer.serverport = conf.OConfig["serverport"]
 	MyServer.serveraddr = MyServer.Resolve(MyServer.servername)
 	MyServer.nickname = conf.OConfig["nickname"]
-	MyServer.protocol = conf.OConfig["protocol"]
 	MyServer.delay, _ = strconv.Atoi(conf.OConfig["delay"])
 	MyServer.heartbeat, _ = strconv.Atoi(conf.OConfig["heartbeat"])
 	MyServer.channel = conf.OConfig["channel"]
