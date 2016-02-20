@@ -21,7 +21,7 @@ func Gandalf(w http.ResponseWriter, r *http.Request) {
 
 	if pass == false {
 		log.Println("[WEB][AUTH] YOU SHALL NOT PASS!")
-		w.Header().Set("WWW-Authenticate", "Basic realm=\"Ollyster\"")
+		w.Header().Set("WWW-Authenticate", "Basic realm=\"Ollyster-\"")
 		http.Error(w, "authorization failed", http.StatusUnauthorized)
 	}
 
