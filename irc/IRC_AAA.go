@@ -46,10 +46,10 @@ func init() {
 func (this *IrcServer) ircClient() {
 
 	this.ircDial()
-	this.reader = bufio.NewScanner(this.socket)
+
 	var message string = "NOOP" // always better to initialize I/O strings
 
-	for this.reader.Scan() {
+	for this.reader = bufio.NewScanner(this.socket); true; this.reader.Scan() {
 
 		defer func() {
 			if e := recover(); e != nil {
@@ -57,7 +57,7 @@ func (this *IrcServer) ircClient() {
 				this.socket.Close()
 				time.Sleep(time.Duration(10000 * time.Millisecond))
 				this.ircDial()
-				this.reader = bufio.NewScanner(this.socket)
+
 			}
 		}()
 
