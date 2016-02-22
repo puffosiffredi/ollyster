@@ -22,7 +22,7 @@ func (this *IrcServer) KeepAliveThread() {
 
 	for {
 
-		orario := time.Now()
+		
 
 		// make it robust
 
@@ -40,6 +40,7 @@ func (this *IrcServer) KeepAliveThread() {
 		}()
 
 		time.Sleep(2 * time.Minute)
+		orario := time.Now()
 		log.Printf("[IRC] sending PING :%s", orario.Format(layout))
 
 		_, err := this.socket.Write([]byte("PING :" + orario.Format(layout) + "\n"))
