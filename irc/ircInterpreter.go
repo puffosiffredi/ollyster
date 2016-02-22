@@ -18,6 +18,17 @@ func (this *IrcServer) IrcInterpreter(message string) {
 		return
 	}
 
+	// :sendak.freenode.net PONG sendak.freenode.net :2016-02-22.08:52:19
+
+	if matches, _ := regexp.MatchString("(?i)^:.*[ ]+PONG[ ]+.*[ ]+:([0-9]{4}-[0-9]{2}-[0-9]{2}.[0-9]{2}:[0-9]{2}:[0-9]{2})$", message); matches == true {
+		re, _ := regexp.Compile("(?i)^:(.*)[ ]+PONG[ ]+.*[ ]+:(.*)$")
+		match := re.FindStringSubmatch(message)
+		log.Printf("[IRC] Server %s sent back PONG we sent at %s", match[1], match[2])
+
+		return
+
+	}
+
 	// :nick!user@ip-address PRIVMSG your-nick :Message
 	// PRIVATE MESSAGE
 	privMsgString := "(?i)^:.*!.*PRIVMSG.*" + this.nickname + " :.*$"

@@ -1,7 +1,6 @@
 package irc
 
 import (
-
 	"log"
 	"ollyster/files"
 	"time"
@@ -19,15 +18,20 @@ func (this *IrcServer) KeepAliveThread() {
 
 	log.Println("[IRC] Initializing the KeepAlive engine")
 
+	const layout = "2006-01-02.03:04:05"
+
 	for {
+
+		orario := time.Now()
+
 		// make it robust
 
 		defer func() {
 			if e := recover(); e != nil {
 				log.Println("[TCP] Network issue, RECOVER in act")
-				
+
 				this.socket.Close()
-				
+
 				time.Sleep(30 * time.Second)
 				log.Println("[TCP] Trying to reconnect.")
 				this.ircDial()
@@ -36,16 +40,15 @@ func (this *IrcServer) KeepAliveThread() {
 		}()
 
 		time.Sleep(2 * time.Minute)
-		log.Printf("[IRC] sending PING :%s", this.servername)
+		log.Printf("[IRC] sending PING :%s", orario.Format(layout))
 
-		_, err := this.socket.Write([]byte("PING :" + this.servername + "\n"))
+		_, err := this.socket.Write([]byte("PING :" + orario.Format(layout) + "\n"))
 
 		if err != nil {
 			log.Println("[TCP][PING] Network issue, RECOVER in act")
-			
+
 			this.socket.Close()
-			
-			
+
 			time.Sleep(10 * time.Second)
 			log.Println("[TCP] Trying to reconnect.")
 			this.ircDial()
@@ -65,11 +68,11 @@ func (this *IrcServer) ChannelThread() {
 		defer func() {
 			if e := recover(); e != nil {
 				log.Println("[TCP][LIST] Network issue, RECOVER in act")
-			
-			this.socket.Close()
-			time.Sleep(10 * time.Second)
-			log.Println("[TCP][LIST] Trying to reconnect.")
-			this.ircDial()
+
+				this.socket.Close()
+				time.Sleep(10 * time.Second)
+				log.Println("[TCP][LIST] Trying to reconnect.")
+				this.ircDial()
 
 			}
 		}()
