@@ -23,6 +23,7 @@ type IrcServer struct {
 	channel      string // the channel to join
 	min_chanlist string // minimal amount of users for a channel to be listed
 	reader       *bufio.Scanner
+	writer       *bufio.Writer
 }
 
 var MyServer IrcServer
@@ -119,12 +120,15 @@ func (this *IrcServer) ircDial() {
 
 func (this *IrcServer) IrcCmd(command string) {
 
+	this.writer = bufio.NewWriter(this.socket)
+
 	log.Printf("[IRC] Sending %s command", command)
-	_, err := this.socket.Write([]byte(command + "\n"))
+
+	_, err := this.writer.WriteString(command + "\n")
 	if err != nil {
 		log.Printf("[IRC] Cannot send <%s> :  %s:", command, err)
-
 	} else {
+		this.writer.Flush()
 		log.Printf("[IRC] Successfully sent <%s>", command)
 	}
 
