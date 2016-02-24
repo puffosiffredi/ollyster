@@ -54,8 +54,9 @@ func (this *IrcServer) ircClient() {
 
 		defer func() {
 			if e := recover(); e != nil {
-				log.Println("[IRC] Network issue, re-dial after 10 sec.")
-				this.socket.Close()
+				log.Println("[IRC][RECOVER] Network issue, re-dial after 10 sec.")
+
+				this.serveraddr = this.Resolve(this.servername)
 				time.Sleep(time.Duration(10000 * time.Millisecond))
 				this.ircDial()
 
@@ -66,7 +67,13 @@ func (this *IrcServer) ircClient() {
 
 		err := this.reader.Err()
 		if err != nil {
-			log.Println("[IRC] Error reading socket: %s ", err)
+			log.Println("[IRC][READER] Error reading socket: %s ", err)
+			log.Println("[IRC][READER] Network issue, re-dial after 10 sec.")
+
+			this.serveraddr = this.Resolve(this.servername)
+			time.Sleep(time.Duration(10000 * time.Millisecond))
+			this.ircDial()
+
 		}
 
 		// does all
@@ -82,13 +89,12 @@ func (this *IrcServer) ircDial() {
 
 	defer func() {
 		if e := recover(); e != nil {
-			log.Println("[TCP] Network issue, RECOVER in act")
-			this.socket = nil
+			log.Println("[TCP][DIAL] Network issue, RECOVER in act")
+
 		}
 	}()
 
-	this.socket, err = net.DialTCP(this.protocol, nil, this.MakeAddr())
-
+	this.socket, err = net.DialTCP(this.protocol, this.ReadIpFromHost(), this.MakeAddr())
 	if err != nil {
 		log.Printf("[AAA] CONNECTION ERROR: %s", err)
 	} else {
@@ -96,7 +102,8 @@ func (this *IrcServer) ircDial() {
 		this.socket.SetKeepAlivePeriod(time.Duration(this.heartbeat) * time.Second) // tcp keepalive to 10 seconds
 		this.socket.SetLinger(0)                                                    // brutal close
 
-		log.Println("[AAA] Connected. Now waiting for courtesy")
+		log.Printf("[TCP] Connect OK: %s <-> %s", this.socket.LocalAddr().String(), this.socket.RemoteAddr().String())
+
 		time.Sleep(time.Duration(this.delay) * time.Millisecond)
 		log.Println("[AAA] Now sending the AAA")
 		this.IrcCmd("CAP LS")
@@ -119,6 +126,17 @@ func (this *IrcServer) ircDial() {
 }
 
 func (this *IrcServer) IrcCmd(command string) {
+
+	defer func() {
+		if e := recover(); e != nil {
+			log.Println("[IRC][PING] Network issue, re-dial after 10 sec.")
+
+			this.serveraddr = this.Resolve(this.servername)
+			time.Sleep(time.Duration(10000 * time.Millisecond))
+			this.ircDial()
+
+		}
+	}()
 
 	this.writer = bufio.NewWriter(this.socket)
 

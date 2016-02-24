@@ -57,11 +57,12 @@ func (this *IrcServer) IrcInterpreter(message string) {
 	}
 
 	// :nick!user@ip-address PRIVMSG #channel :Message
+
 	// MESSAGE ONLY
 	chanMsgString = "(?i)^:.*!.*[ ]+PRIVMSG[ ]+#.*[ ]+:.*$"
 	if matches, _ := regexp.MatchString(chanMsgString, message); matches == true {
 
-		re, _ := regexp.Compile("(?i)^:(.*)!.*[ ]+PRIVMSG[ ]+(#.*)[ ]+:(.*)$")
+		re, _ := regexp.Compile("(?i)^:(.*)!.*[ ]+PRIVMSG[ ]+(#.*)[ ]:(.*)$")
 		match := re.FindStringSubmatch(message)
 
 		log.Printf("[IRC] %s sent a message to %s:  <%s>", match[1], match[2], match[3])

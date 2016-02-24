@@ -6,6 +6,29 @@ import (
 	"strings"
 )
 
+func (this *IrcServer) ReadIpFromHost() *net.TCPAddr {
+
+	var addr string
+
+	conn, err := net.Dial("udp", this.serveraddr+":"+this.serverport)
+	if err != nil {
+		log.Printf("[DNS] SYSADMIIIIIN : cannot use UDP")
+		conn.Close()
+		return nil
+
+	} else {
+		addr = conn.LocalAddr().String()
+		conn.Close()
+
+	}
+
+	ind, _ := net.ResolveTCPAddr("tcp", addr)
+
+	log.Printf("[DNS] Resolution ok: %s -> %s", "Local", ind.IP)
+
+	return ind
+}
+
 func (this *IrcServer) MakeAddr() *net.TCPAddr {
 
 	tcpAddr, err := net.ResolveTCPAddr(this.protocol, this.serveraddr+":"+this.serverport)

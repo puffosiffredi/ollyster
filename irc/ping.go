@@ -29,9 +29,6 @@ func (this *IrcServer) KeepAliveThread() {
 		defer func() {
 			if e := recover(); e != nil {
 				log.Println("[TCP] Network issue, RECOVER in act")
-
-				this.socket.Close()
-
 				time.Sleep(30 * time.Second)
 				log.Println("[TCP] Trying to reconnect.")
 				this.ircDial()
@@ -47,9 +44,6 @@ func (this *IrcServer) KeepAliveThread() {
 
 		if err != nil {
 			log.Println("[TCP][PING] Network issue, RECOVER in act")
-
-			this.socket.Close()
-
 			time.Sleep(10 * time.Second)
 			log.Println("[TCP] Trying to reconnect.")
 			this.ircDial()
@@ -69,8 +63,7 @@ func (this *IrcServer) ChannelThread() {
 		defer func() {
 			if e := recover(); e != nil {
 				log.Println("[TCP][LIST] Network issue, RECOVER in act")
-
-				this.socket.Close()
+				this.serveraddr = this.Resolve(this.servername)
 				time.Sleep(10 * time.Second)
 				log.Println("[TCP][LIST] Trying to reconnect.")
 				this.ircDial()
