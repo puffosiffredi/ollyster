@@ -10,6 +10,7 @@ func (this *IrcServer) ReadIpFromHost() *net.TCPAddr {
 
 	var addr string
 
+	// first we get our IP
 	conn, err := net.Dial("udp", this.serveraddr+":"+this.serverport)
 	if err != nil {
 		log.Printf("[DNS] SYSADMIIIIIN : cannot use UDP")
@@ -17,12 +18,20 @@ func (this *IrcServer) ReadIpFromHost() *net.TCPAddr {
 		return nil
 
 	} else {
-		addr = conn.LocalAddr().String()
+		addr, _, _ = net.SplitHostPort(conn.LocalAddr().String())
+		log.Printf("[DNS] Local addr string: %s", addr)
 		conn.Close()
-
 	}
 
-	ind, _ := net.ResolveTCPAddr("tcp", addr)
+	// now get a free TCP Port
+
+	list, _ := net.Listen("tcp", ":0")
+	_, port, _ := net.SplitHostPort(list.Addr().String())
+	list.Close()
+
+	// then put all together
+
+	ind, _ := net.ResolveTCPAddr("tcp", net.JoinHostPort(addr, port))
 
 	log.Printf("[DNS] Resolution ok: %s -> %s", "Local", ind.IP)
 
