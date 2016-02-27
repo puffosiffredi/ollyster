@@ -34,7 +34,7 @@ func (this *IrcServer) IrcInterpreter(message string) {
 	privMsgString := "(?i)^:.*!.*PRIVMSG.*" + this.nickname + " :.*$"
 	if matches, _ := regexp.MatchString(privMsgString, message); matches == true {
 
-		re, _ := regexp.Compile("(?i)^:(.*)!.*[ ]+PRIVMSG[ ]+.*[ ]+:(.*)$")
+		re, _ := regexp.Compile("(?i)^:(.*)!.*[ ]+PRIVMSG[ ]+[^:]+:(.*)$")
 		match := re.FindStringSubmatch(message)
 
 		files.MyStream.WriteMsgPriv(match[1], match[2])
@@ -45,10 +45,10 @@ func (this *IrcServer) IrcInterpreter(message string) {
 
 	// :nick!user@ip-address PRIVMSG #channel :Message
 	// MENTION
-	chanMsgString := "(?i)^:.*!.*PRIVMSG[ ]+ #.*[ ]+:.*" + this.nickname + ".*$"
+	chanMsgString := "(?i)^:.*!.*PRIVMSG[ ]+#.*[ ]+:.*" + this.nickname + ".*$"
 	if matches, _ := regexp.MatchString(chanMsgString, message); matches == true {
 
-		re, _ := regexp.Compile("(?i)^:(.*)!.*[ ]+PRIVMSG[ ]+(#.*)[ ]+:(.*)$")
+		re, _ := regexp.Compile("(?i)^:(.*)!.*[ ]+PRIVMSG[ ]+(#[^:]+)[ ]+:(.*)$")
 		match := re.FindStringSubmatch(message)
 
 		log.Printf("[IRC] %s Mentioned you in %s:  <%s>", match[1], match[2], match[3])
@@ -62,7 +62,7 @@ func (this *IrcServer) IrcInterpreter(message string) {
 	chanMsgString = "(?i)^:.*!.*[ ]+PRIVMSG[ ]+#.*[ ]+:.*$"
 	if matches, _ := regexp.MatchString(chanMsgString, message); matches == true {
 
-		re, _ := regexp.Compile("(?i)^:(.*)!.*[ ]+PRIVMSG[ ]+(#.*)[ ]:(.*)$")
+		re, _ := regexp.Compile("(?i)^:(.*)!.*[ ]+PRIVMSG[ ]+(#[^:]+)[ ]:(.*)$")
 		match := re.FindStringSubmatch(message)
 
 		log.Printf("[IRC] %s sent a message to %s:  <%s>", match[1], match[2], match[3])
@@ -75,7 +75,7 @@ func (this *IrcServer) IrcInterpreter(message string) {
 	chanMsgString = "(?i)^:.*[ ]+322[ ]+" + this.nickname + "[ ]+#.*$"
 	if matches, _ := regexp.MatchString(chanMsgString, message); matches == true {
 
-		re, _ := regexp.Compile("(?i)^:.*[ ]+322[ ]+.*[ ]+(#.*)[ ]+[0-9]+[ ]+:(.*)$")
+		re, _ := regexp.Compile("(?i)^:.*[ ]+322[ ]+.*[ ]+(#[^:]+)[ ]+[0-9]+[ ]+:(.*)$")
 		match := re.FindStringSubmatch(message)
 		list_line := "<tr><td class=\"col-md-2\"><b>" + match[1] + "</b></td><td class=\"col-md-4\">" + match[2] + "</td></tr>"
 
@@ -89,7 +89,7 @@ func (this *IrcServer) IrcInterpreter(message string) {
 	chanMsgString = "(?i)^:.*!.*NOTICE[ ]+" + this.nickname + "[ ]+:.*$"
 	if matches, _ := regexp.MatchString(chanMsgString, message); matches == true {
 
-		re, _ := regexp.Compile("(?i)^:(.*)!.*NOTICE[ ]+.*[ ]+:(.*)$")
+		re, _ := regexp.Compile("(?i)^:(.*)!.*NOTICE[ ]+[^:]+[ ]+:(.*)$")
 		match := re.FindStringSubmatch(message)
 
 		log.Printf("[IRC] %s sent a NOTICE :  <%s>", match[1], match[2])
@@ -101,7 +101,7 @@ func (this *IrcServer) IrcInterpreter(message string) {
 	// LIST OF USERS
 	chanMsgString = "(?i)^:.*353[ ]+" + this.nickname + "[ ]+.[ ]+#.*[ ]+:.*$"
 	if matches, _ := regexp.MatchString(chanMsgString, message); matches == true {
-		re, _ := regexp.Compile("(?i)^:.*353[ ]+(.*)[ ]+.[ ]+(#.*)[ ]+:(.*)$")
+		re, _ := regexp.Compile("(?i)^:.*353[ ]+(.*)[ ]+.[ ]+(#[^:]+)[ ]+:(.*)$")
 		match := re.FindStringSubmatch(message)
 		log.Printf("[IRC] List of channel for user %s , channel %s : %s", match[1], match[2], match[3])
 
@@ -136,6 +136,6 @@ func (this *IrcServer) IrcInterpreter(message string) {
 		return
 	}
 
-	log.Printf("[IRC]->  <%s> ", message)
+	log.Printf("[RAW]->  <%s> ", message)
 
 }

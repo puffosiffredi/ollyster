@@ -56,7 +56,7 @@ func (this *IrcServer) Resolve(fqdn string) (addr string) {
 	addresses, err := net.LookupIP(fqdn)
 
 	if err != nil {
-		log.Println("[DNS] ERROR %s", err)
+		log.Printf("[DNS] ERROR %s", err)
 		this.protocol = "tcp4"
 		return "127.0.0.1"
 
