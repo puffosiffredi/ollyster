@@ -2,6 +2,7 @@ package irc
 
 import (
 	"bufio"
+	"fmt"
 	"log"
 	"net"
 	"ollyster/conf"
@@ -31,14 +32,14 @@ var MyServer IrcServer
 func init() {
 
 	// taken by the conf file
-	MyServer.servername = conf.OConfig["servername"]
-	MyServer.serverport = conf.OConfig["serverport"]
+	MyServer.servername = conf.GetConfItem("servername")
+	MyServer.serverport = conf.GetConfItem("serverport")
 	MyServer.serveraddr = MyServer.Resolve(MyServer.servername)
-	MyServer.nickname = conf.OConfig["nickname"]
-	MyServer.delay, _ = strconv.Atoi(conf.OConfig["delay"])
-	MyServer.heartbeat, _ = strconv.Atoi(conf.OConfig["heartbeat"])
-	MyServer.channel = conf.OConfig["channel"]
-	MyServer.min_chanlist = conf.OConfig["min_chanlist"]
+	MyServer.nickname = conf.GetConfItem("nickname")
+	MyServer.delay, _ = strconv.Atoi(conf.GetConfItem("delay"))
+	MyServer.heartbeat, _ = strconv.Atoi(conf.GetConfItem("heartbeat"))
+	MyServer.channel = conf.GetConfItem("channel")
+	MyServer.min_chanlist = conf.GetConfItem("min_chanlist")
 
 	go MyServer.ircClient()
 
@@ -46,18 +47,23 @@ func init() {
 
 func (this *IrcServer) ircClient() {
 
-	defer func() {
-		if e := recover(); e != nil {
-			log.Println("[IRC][REC] Network issue, waiting the network be back")
-
-		}
-	}()
-
 	this.ircDial()
 
 	var message string = "NOOP" // always better to initialize I/O strings
 
 	for {
+
+		defer func() {
+			if e := recover(); e != nil {
+				log.Println("[IRC][REC] Network issue, waiting the network be back")
+				err, ok := e.(error)
+				if !ok {
+					err = fmt.Errorf("[EXC]: %v", e)
+				}
+				log.Printf("[IRC][REC] Error: <%s>", err)
+
+			}
+		}()
 
 		if this.reader.Scan() {
 			message = this.reader.Text()
@@ -82,6 +88,11 @@ func (this *IrcServer) ircDial() {
 	defer func() {
 		if e := recover(); e != nil {
 			log.Println("[TCP][DIAL][REC] Network issue, RECOVER in act")
+			err, ok := e.(error)
+			if !ok {
+				err = fmt.Errorf("[EXC]: %v", e)
+			}
+			log.Printf("[TCP][DIAL][REC] Error: <%s>", err)
 
 		}
 	}()
@@ -123,7 +134,12 @@ func (this *IrcServer) IrcCmd(command string) {
 
 	defer func() {
 		if e := recover(); e != nil {
-			log.Println("[IRC][CMD] Network issue, cannot write in the socket.")
+			log.Println("[IRC][CMD][REC] Network issue, cannot write in the socket.")
+			err, ok := e.(error)
+			if !ok {
+				err = fmt.Errorf("[EXC]: %v", e)
+			}
+			log.Printf("[IRC][CMD][REC] Error: <%s>", err)
 
 		}
 	}()

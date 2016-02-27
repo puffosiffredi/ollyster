@@ -65,3 +65,21 @@ func readConfig(FileName string) {
 	file.Close()
 
 }
+
+func GetConfItem(item_name string) string {
+
+	var tmp_value string
+
+	if val, ok := OConfig[item_name]; ok {
+
+		tmp_value = val
+	} else {
+
+		log.Printf("[ETC][ERROR] no config item named %s", item_name)
+
+		tmp_value = "ERROR"
+	}
+
+	return tmp_value
+
+}

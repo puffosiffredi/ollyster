@@ -23,14 +23,15 @@ func init() {
 
 func main() {
 	// Simple static webserver:
-	log.Println("[WEB] Starting http server on port " + conf.OConfig["webport"])
+	log.Println("[WEB] Starting http server on port " + conf.GetConfItem("webport"))
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/static/", web.ServeStatic)
 	mux.HandleFunc("/network/", web.ServeNetwork)
 	mux.HandleFunc("/inbox/", web.ServeInbox)
+	mux.HandleFunc("/get/addgroup/", web.AddGroup)
 	mux.HandleFunc("/", web.Home)
 
-	log.Fatal(http.ListenAndServe(":"+conf.OConfig["webport"], mux))
+	log.Fatal(http.ListenAndServe(":"+conf.GetConfItem("webport"), mux))
 
 }

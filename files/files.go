@@ -14,16 +14,19 @@ type ollysterSocial struct {
 
 	// file needed for the stream
 
-	streamname string
-	streampath string
+	streamname string // name of the file containing the stream in html: messages, etc
+	streampath string // path of the file which contains the stream
 
-	privtname string
+	privtname string // name of the file where we store private messages and notices.
 
 	//  file needed for the channel list
 
-	channelname string
-	Channelbuf  string
-	NamesBuf    string
+	channelname string // name of the file containing a dump of channelnames. Mostly for debug.
+
+	OChannels map[string]string // map containing a list of channelname, channeldesscription
+
+	NamesBuf string // contains all the people which subscribed channels we subscribed
+
 }
 
 var MyStream ollysterSocial
@@ -32,10 +35,11 @@ func init() {
 
 	MyStream.InitializeChanList()
 	MyStream.streampath = filepath.Join(tools.Hpwd(), "data")
-	log.Println("[TXT] Streampath is: " + MyStream.streampath)
+
+	log.Println("[TXT][INI] Streampath is: " + MyStream.streampath)
 	err := os.MkdirAll(filepath.Join(MyStream.streampath), 0755)
 	if err != nil {
-		log.Printf("[TXT] Cannot create directory: %s", err)
+		log.Printf("[TXT][INI] Cannot create directory: %s", err)
 	} else {
 		go MyStream.RotateSocialFolder()
 	}
@@ -85,15 +89,6 @@ func (this *ollysterSocial) RotateSocialFolder() {
 		time.Sleep(10 * time.Minute)
 
 	}
-
-}
-
-func (this *ollysterSocial) FlushChanList() {
-
-	// initialize the group file if it doesn't exists
-	// periodically flushes the channelbuf there
-
-	ioutil.WriteFile(this.channelname, []byte(this.Channelbuf), 0755)
 
 }
 
@@ -228,24 +223,7 @@ func (this *ollysterSocial) AddPrivTopFile(line string) error {
 
 }
 
-// AddUniqueChannel adds a channel to the channel buffer
-
-func (this *ollysterSocial) InitializeChanList() {
-
-	this.Channelbuf = "<!----Here we initialized it---->"
-
-}
-
-// AddUniqueChannel adds a channel to the channel buffer
-
-func (this *ollysterSocial) AddUniqueChannel(channelline string) error {
-
-	this.Channelbuf += "\n" + channelline
-
-	return nil
-
-}
-
+// adds one user to the list of available users
 func (this *ollysterSocial) AddUniqueUser(userline string) error {
 
 	this.NamesBuf += "\n" + userline

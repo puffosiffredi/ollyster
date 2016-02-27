@@ -10,9 +10,9 @@ import (
 func (this *IrcServer) IrcInterpreter(message string) {
 
 	if matches, _ := regexp.MatchString("(?i)^PING :.*$", message); matches == true {
-		log.Printf("[IRC] %s ", message)
+		log.Printf("[IRC][MSG] %s ", message)
 		response := strings.Replace(message, "PING", "PONG", 1)
-		log.Printf("[IRC] Sending back the -> %s", response)
+		log.Printf("[IRC][MSG] Sending back the -> %s", response)
 		this.IrcCmd(response)
 
 		return
@@ -23,7 +23,7 @@ func (this *IrcServer) IrcInterpreter(message string) {
 	if matches, _ := regexp.MatchString("(?i)^:.*[ ]+PONG[ ]+.*[ ]+:([0-9]{4}-[0-9]{2}-[0-9]{2}.[0-9]{2}:[0-9]{2}:[0-9]{2})$", message); matches == true {
 		re, _ := regexp.Compile("(?i)^:(.*)[ ]+PONG[ ]+.*[ ]+:(.*)$")
 		match := re.FindStringSubmatch(message)
-		log.Printf("[IRC] Server %s sent back PONG we sent at %s", match[1], match[2])
+		log.Printf("[IRC][MSG] Server %s sent back PONG we sent at %s", match[1], match[2])
 
 		return
 
@@ -39,7 +39,7 @@ func (this *IrcServer) IrcInterpreter(message string) {
 
 		files.MyStream.WriteMsgPriv(match[1], match[2])
 
-		log.Printf("[IRC] Private message from %s:  <%s>", match[1], match[2])
+		log.Printf("[IRC][MSG] Private message from %s:  <%s>", match[1], match[2])
 		return
 	}
 
@@ -51,7 +51,7 @@ func (this *IrcServer) IrcInterpreter(message string) {
 		re, _ := regexp.Compile("(?i)^:(.*)!.*[ ]+PRIVMSG[ ]+(#[^:]+)[ ]+:(.*)$")
 		match := re.FindStringSubmatch(message)
 
-		log.Printf("[IRC] %s Mentioned you in %s:  <%s>", match[1], match[2], match[3])
+		log.Printf("[IRC][MSG] %s Mentioned you in %s:  <%s>", match[1], match[2], match[3])
 		files.MyStream.WriteMsgMention(match[1], match[2], match[3])
 		return
 	}
@@ -65,7 +65,7 @@ func (this *IrcServer) IrcInterpreter(message string) {
 		re, _ := regexp.Compile("(?i)^:(.*)!.*[ ]+PRIVMSG[ ]+(#[^:]+)[ ]:(.*)$")
 		match := re.FindStringSubmatch(message)
 
-		log.Printf("[IRC] %s sent a message to %s:  <%s>", match[1], match[2], match[3])
+		log.Printf("[IRC][MSG] %s sent a message to %s:  <%s>", match[1], match[2], match[3])
 		files.MyStream.WriteMsgGroup(match[1], match[2], match[3])
 		return
 	}
@@ -77,10 +77,9 @@ func (this *IrcServer) IrcInterpreter(message string) {
 
 		re, _ := regexp.Compile("(?i)^:.*[ ]+322[ ]+.*[ ]+(#[^:]+)[ ]+[0-9]+[ ]+:(.*)$")
 		match := re.FindStringSubmatch(message)
-		list_line := "<tr><td class=\"col-md-2\"><b>" + match[1] + "</b></td><td class=\"col-md-4\">" + match[2] + "</td></tr>"
 
-		log.Printf("[IRC] Registering channel :  <%s>", match[1])
-		files.MyStream.AddUniqueChannel(list_line)
+		log.Printf("[IRC][MSG] Registering channel :  <%s>", match[1])
+		files.MyStream.AddUniqueChannel(match[1], match[2])
 		return
 	}
 
@@ -92,7 +91,7 @@ func (this *IrcServer) IrcInterpreter(message string) {
 		re, _ := regexp.Compile("(?i)^:(.*)!.*NOTICE[ ]+[^:]+[ ]+:(.*)$")
 		match := re.FindStringSubmatch(message)
 
-		log.Printf("[IRC] %s sent a NOTICE :  <%s>", match[1], match[2])
+		log.Printf("[IRC][MSG] %s sent a NOTICE :  <%s>", match[1], match[2])
 		files.MyStream.WriteNotice(match[1], match[2])
 		return
 	}
@@ -103,7 +102,7 @@ func (this *IrcServer) IrcInterpreter(message string) {
 	if matches, _ := regexp.MatchString(chanMsgString, message); matches == true {
 		re, _ := regexp.Compile("(?i)^:.*353[ ]+(.*)[ ]+.[ ]+(#[^:]+)[ ]+:(.*)$")
 		match := re.FindStringSubmatch(message)
-		log.Printf("[IRC] List of channel for user %s , channel %s : %s", match[1], match[2], match[3])
+		log.Printf("[IRC][MSG] List of channel for user %s , channel %s : %s", match[1], match[2], match[3])
 
 		names := strings.Split(match[3], " ")
 
@@ -130,9 +129,9 @@ func (this *IrcServer) IrcInterpreter(message string) {
 	chanMsgString = "(?i)^:.*323 " + this.nickname + " :End.*LIST$"
 	if matches, _ := regexp.MatchString(chanMsgString, message); matches == true {
 
-		log.Printf("[IRC] Saving list of channels....")
+		log.Printf("[IRC][MSG] Saving list of channels....")
 		files.MyStream.FlushChanList()
-		log.Printf("[IRC] Channel list registered")
+		log.Printf("[IRC][MSG] Channel list registered")
 		return
 	}
 
