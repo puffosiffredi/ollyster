@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"ollyster/conf"
@@ -22,6 +23,19 @@ func init() {
 }
 
 func main() {
+
+	defer func() {
+		if e := recover(); e != nil {
+			log.Println("[MAIN] OH, SHIT.")
+			err, ok := e.(error)
+			if !ok {
+				err = fmt.Errorf("[EXC]: %v", e)
+			}
+			log.Printf("[MAIN] Error: <%s>", err)
+
+		}
+	}()
+
 	// Simple static webserver:
 	log.Println("[WEB] Starting http server on port " + conf.GetConfItem("webport"))
 	mux := http.NewServeMux()

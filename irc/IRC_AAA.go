@@ -47,23 +47,23 @@ func init() {
 
 func (this *IrcServer) ircClient() {
 
+	defer func() {
+		if e := recover(); e != nil {
+			log.Println("[IRC][REC] Network issue, waiting the network be back")
+			err, ok := e.(error)
+			if !ok {
+				err = fmt.Errorf("[EXC]: %v", e)
+			}
+			log.Printf("[IRC][REC] Error: <%s>", err)
+
+		}
+	}()
+
 	this.ircDial()
 
 	var message string = "NOOP" // always better to initialize I/O strings
 
 	for {
-
-		defer func() {
-			if e := recover(); e != nil {
-				log.Println("[IRC][REC] Network issue, waiting the network be back")
-				err, ok := e.(error)
-				if !ok {
-					err = fmt.Errorf("[EXC]: %v", e)
-				}
-				log.Printf("[IRC][REC] Error: <%s>", err)
-
-			}
-		}()
 
 		if this.reader.Scan() {
 			message = this.reader.Text()
@@ -74,7 +74,7 @@ func (this *IrcServer) ircClient() {
 
 			log.Printf("[IRC][READ] Error reading socket: %s ", err)
 			log.Println("[IRC][READ] Waiting the connection to be back ")
-			time.Sleep(time.Duration(10000 * time.Millisecond))
+			time.Sleep(time.Duration(2 * time.Minute))
 		}
 
 	}
