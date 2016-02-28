@@ -52,4 +52,4 @@ Done.
 6. Form to edit profile via web and not manually, idem for configuration.
 7. Form to answer the messages on the "Timeline" page.
 8. CTCP commands to get icons, email, website, and so, from the other ollyster clients: social interaction.
-9. Find a decent DNS resolver for golang (no more writing the IP into the config file) (ehi, google, WTF? Seriously?)
+9. ~~Find a decent DNS resolver for golang (no more writing the IP into the config file) (ehi, google, WTF? Seriously?)~~
