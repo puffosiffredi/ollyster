@@ -45,7 +45,7 @@ Done.
 ##TODO
 
 1. ~~IRC interface~~
-2. ~~WEB interface~~ 
+2. **Switch to Semantic UI**
 3. ~~Timeline page~~
 4. ~~Groups page (actually channels)~~
 5. ~~Friends functionality in the profile~~
