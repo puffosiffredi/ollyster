@@ -1,4 +1,5 @@
 # ollyster
+<<<<<<< HEAD
 SELF-Hosted, WEB-BASED IRC client, with a Social Flavour.
 
 My challenge here was to proof something I realized time ago: a "social network" 
