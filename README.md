@@ -28,7 +28,7 @@ So:
 
 To install it:
 
-just go into a folder, and _git clone https://github.com/uriel-fanelli/ollyster.git_
+download from git
 
 Then enter /etc and edit both the config file  (ollyster.conf) and the profile (profile.conf).
 
